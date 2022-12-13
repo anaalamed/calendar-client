@@ -1,0 +1,28 @@
+<div class="container share">
+  <div class="share_box">
+    <h2>Share</h2>
+
+    <div id="userList">
+      <input id="input-user" type="email" placeholder="enter Email" />
+      <button class="addUser btn btn-light" type="button">Add user</button>
+    </div>
+
+    <div id="users-table-div">
+      <ul id="users-table"></ul>
+    </div>
+
+    <label for="permission">please select permission</label>
+    <select name="permission" id="permission">
+      <option value="OWNER">Owner</option>
+      <option value="EDITOR">Editor</option>
+      <option value="VIEWER" selected>Viewer</option>
+    </select>
+
+    <button id="btnUpdateAndNotify" type="button" class="btn btn-secondary">
+      Update & Notify
+    </button>
+    <button id="btnUpdate" type="button" class="btn btn-secondary">
+      Update
+    </button>
+  </div>
+</div>
