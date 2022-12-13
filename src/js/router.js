@@ -1,7 +1,9 @@
 import { initLogin, initRegistration } from "./auth/auth";
 import { initCalendar } from "./calendar/calendar";
 
-const initRouter = () => {
+const initRouter = async () => {
+  await urlLocationHandler();
+
   // create document click that watches the nav links only
   document.addEventListener("click", (e) => {
     const { target } = e;
