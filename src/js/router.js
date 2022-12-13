@@ -1,14 +1,5 @@
 import { initLogin, initRegistration } from "./auth/auth";
-
-const redirect = (page) => {
-  window.history.pushState({}, "", page);
-  handleLocation();
-};
-
-const redirectToDoc = (page, docId) => {
-  window.history.pushState({}, "", page);
-  handleLocationWithDoc(docId);
-};
+import { initCalendar } from "./calendar/calendar";
 
 const initRouter = () => {
   // create document click that watches the nav links only
@@ -23,7 +14,7 @@ const initRouter = () => {
   });
 };
 
-const urlPageTitle = "Shared Docs";
+const urlPageTitle = "Calendar";
 
 // create an object that maps the url to the template, title, and description
 const urlRoutes = {
@@ -51,37 +42,14 @@ const urlRoutes = {
     description: "This is the log in page",
     init: () => {
       initLogin();
-      // initRegistration();
     },
   },
-  "/docs": {
-    template: "pages/docs.html",
-    title: "Docs | " + urlPageTitle,
-    description: "This is the docs page",
+  "/calendar": {
+    template: "pages/calendar.html",
+    title: "My Calendar | " + urlPageTitle,
+    description: "This is the calendar page",
     init: () => {
-      exportFile();
-      importFile();
-      copyLink();
-      update();
-    },
-  },
-  "/folder": {
-    template: "pages/folder.html",
-    title: "Folder | " + urlPageTitle,
-    description: "This is the folder page",
-    init: () => {
-      getChildren();
-      initImport();
-    },
-  },
-  "/share": {
-    template: "pages/share.html",
-    title: "Share | " + urlPageTitle,
-    description: "This is the share page",
-    init: () => {
-      newSharedUser();
-      updatePermission();
-      updatePermissionAndNotify();
+      initCalendar();
     },
   },
 };
@@ -119,4 +87,4 @@ const urlLocationHandler = async () => {
   // document.querySelector('meta[name="description"]').setAttribute("content", route.description);
 };
 
-export { redirectToDoc, redirect, initRouter };
+export { initRouter };
