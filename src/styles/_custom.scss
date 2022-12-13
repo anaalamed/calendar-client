@@ -1,8 +1,6 @@
-@import "./forms.scss";
-@import "./share.scss";
-@import "./docs.scss";
 /*Google Fonts- Poppins*/
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;1,600&display=swap");
+@import "./forms.scss";
 
 * {
   margin: 0;
@@ -17,9 +15,7 @@ h2 {
   text-align: center;
   font-size: 2rem;
 }
-.tab {
-  margin-top: 2.5em;
-}
+
 
 body {
   background: #d5e1ce;
@@ -51,7 +47,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #d5e1ce;
+    background: #fff;
     div {
       text-align: center;
     }

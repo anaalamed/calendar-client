@@ -1,13 +1,9 @@
 import $ from "jquery";
-import "bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
-// import "./auth/auth";
-// import "./share";
 import { initRouter } from "./router";
 import { openConnection } from "./sockets";
+import "bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/_custom.scss";
-
-console.log("index.js file");
 
 $(() => {
   initRouter();

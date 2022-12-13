@@ -1,7 +1,4 @@
 import { initLogin, initRegistration } from "./auth/auth";
-import { update, copyLink, importFile, exportFile } from "./doc-functions";
-import { newSharedUser, updatePermission, updatePermissionAndNotify } from "./share";
-import { getChildren, initImport } from "./folder";
 
 const redirect = (page) => {
   window.history.pushState({}, "", page);
@@ -91,7 +88,6 @@ const urlRoutes = {
 
 // create a function that watches the url and calls the urlLocationHandler
 const urlRoute = async (event) => {
-  console.log("urlRoute");
   event = event || window.event; // get window.event if event argument not provided
   event.preventDefault();
   // window.history.pushState(state, unused, target link);
@@ -102,7 +98,6 @@ const urlRoute = async (event) => {
 // create a function that handles the url location
 const urlLocationHandler = async () => {
   const location = window.location.pathname; // get the url path
-  console.log(location);
 
   if (location.length == 0) {
     location = "/";
