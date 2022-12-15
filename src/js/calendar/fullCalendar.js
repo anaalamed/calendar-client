@@ -1,3 +1,4 @@
+import $ from "jquery";
 import { Calendar } from "@fullcalendar/core";
 import adaptivePlugin from "@fullcalendar/adaptive";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -6,80 +7,54 @@ import listPlugin from "@fullcalendar/list";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import momentPlugin from "@fullcalendar/moment";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
+import { events } from "./data";
+import pubSub from "./pubsub";
 
 const initFullCal = () => {
   console.log("initFullCal");
-  // document.addEventListener("DOMContentLoaded", function () {
-  let calendarEl = document.getElementById("calendar");
+  $(document).ready(function () {
+    let calendarEl = document.getElementById("calendar");
 
-  let calendar = new Calendar(calendarEl, {
-    plugins: [adaptivePlugin, interactionPlugin, dayGridPlugin, listPlugin, timeGridPlugin, resourceTimelinePlugin, momentPlugin],
-    // titleFormat: "DD/MM/YYYY",
-    schedulerLicenseKey: "XXX",
-    now: momentPlugin.now,
-    editable: true, // enable draggable events
-    aspectRatio: 1.8,
-    scrollTime: "00:00", // undo default 6am scrollTime
-    headerToolbar: {
-      left: "today prev,next",
-      center: "title",
-      right: "timeGridWeek,dayGridMonth,listWeek",
-    },
-    initialView: "timeGridWeek",
-    views: {
-      resourceTimelineThreeDays: {
-        type: "resourceTimeline",
-        duration: { days: 3 },
-        buttonText: "3 day",
+    let calendar = new Calendar(calendarEl, {
+      plugins: [adaptivePlugin, interactionPlugin, dayGridPlugin, listPlugin, timeGridPlugin, resourceTimelinePlugin, momentPlugin],
+      // titleFormat: "DD/MM/YYYY",
+      schedulerLicenseKey: "XXX",
+      now: momentPlugin.now,
+      editable: true, // enable draggable events
+      aspectRatio: 1.8,
+      scrollTime: "00:00", // undo default 6am scrollTime
+      headerToolbar: {
+        left: "today prev,next",
+        center: "title",
+        right: "timeGridDay,timeGridWeek,dayGridMonth,listWeek",
       },
-    },
-    // resourceAreaHeaderContent: "Rooms",
-    // resources: [
-    //   { id: "a", title: "Auditorium A" },
-    //   { id: "b", title: "Auditorium B", eventColor: "green" },
-    //   { id: "c", title: "Auditorium C", eventColor: "orange" },
-    //   {
-    //     id: "d",
-    //     title: "Auditorium D",
-    //     children: [
-    //       { id: "d1", title: "Room D1" },
-    //       { id: "d2", title: "Room D2" },
-    //     ],
-    //   },
-    //   { id: "e", title: "Auditorium E" },
-    //   { id: "f", title: "Auditorium F", eventColor: "red" },
-    //   { id: "g", title: "Auditorium G" },
-    //   { id: "h", title: "Auditorium H" },
-    //   { id: "i", title: "Auditorium I" },
-    //   { id: "j", title: "Auditorium J" },
-    //   { id: "k", title: "Auditorium K" },
-    //   { id: "l", title: "Auditorium L" },
-    //   { id: "m", title: "Auditorium M" },
-    //   { id: "n", title: "Auditorium N" },
-    //   { id: "o", title: "Auditorium O" },
-    //   { id: "p", title: "Auditorium P" },
-    //   { id: "q", title: "Auditorium Q" },
-    //   { id: "r", title: "Auditorium R" },
-    //   { id: "s", title: "Auditorium S" },
-    //   { id: "t", title: "Auditorium T" },
-    //   { id: "u", title: "Auditorium U" },
-    //   { id: "v", title: "Auditorium V" },
-    //   { id: "w", title: "Auditorium W" },
-    //   { id: "x", title: "Auditorium X" },
-    //   { id: "y", title: "Auditorium Y" },
-    //   { id: "z", title: "Auditorium Z" },
-    // ],
-    events: [
-      { id: "1", resourceId: "b", start: "2022-12-15T02:00:00", end: "2022-12-15T07:00:00", title: "event 1" },
-      { id: "2", resourceId: "c", start: "2022-12-15T05:00:00", end: "2022-12-15T22:00:00", title: "event 2" },
-      { id: "3", resourceId: "d", start: "2022-02-06", end: "2022-02-08", title: "event 3" },
-      { id: "4", resourceId: "e", start: "2022-12-16T03:00:00", end: "2022-12-16T08:00:00", title: "event 4" },
-      { id: "5", resourceId: "f", start: "2022-12-14T00:30:00", end: "2022-12-14T02:30:00", title: "event 5" },
-    ],
-  });
+      initialView: "timeGridWeek",
+      views: {
+        resourceTimelineThreeDays: {
+          type: "resourceTimeline",
+          duration: { days: 3 },
+          buttonText: "3 day",
+        },
+      },
+      events: events,
+      eventClick: function (info) {
+        alert("Event: " + info.event.title);
+        console.log("ext", info.event.extendedProps);
 
-  calendar.render();
-  // });
+        // change the border color just for fun
+        info.el.style.borderColor = "red";
+      },
+    });
+
+    calendar.render();
+
+    // change date from side calendar
+    pubSub.subscribe("anEvent", (date) => {
+      console.log("subscrive");
+      console.log(date);
+      calendar.gotoDate(date);
+    });
+  });
 };
 
 export { initFullCal };
