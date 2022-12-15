@@ -1,5 +1,6 @@
 import { initLogin, initRegistration } from "./auth/auth";
 import { initCalendar } from "./calendar/calendar";
+import { initNewCal } from "./calendar/newCal";
 
 const initRouter = async () => {
   await urlLocationHandler();
@@ -52,6 +53,7 @@ const urlRoutes = {
     description: "This is the calendar page",
     init: () => {
       initCalendar();
+      initNewCal();
     },
   },
 };
