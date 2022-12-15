@@ -2,7 +2,7 @@
 .cal_view_wrapper {
   margin: 50px 0; 
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
 
   .side_wrapper {
     width: 20%;
@@ -117,11 +117,13 @@
   }
 
 
-
   .main_wrapper {
-    #navWrap {
-      position: inherit !important;
+    width: 75%;
+
+    #calendar {
+      max-width: 100%;
     }
+
   }
 }
 
