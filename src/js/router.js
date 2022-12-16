@@ -1,5 +1,7 @@
 import { initLogin, initRegistration } from "./auth/auth";
-import { initCalendar } from "./calendar/calendar";
+import { initCalendar } from "./calendar/sideCalendar";
+import { initFullCal } from "./calendar/fullCalendar";
+import { initHomePage } from "./home/home";
 
 const initRouter = async () => {
   await urlLocationHandler();
@@ -29,6 +31,9 @@ const urlRoutes = {
     template: "pages/home.html",
     title: "Home | " + urlPageTitle,
     description: "This is the home page",
+    init: () => {
+      initHomePage();
+    },
   },
   "/signup": {
     template: "pages/signup.html",
@@ -47,11 +52,14 @@ const urlRoutes = {
     },
   },
   "/calendar": {
+    // "/": {
+    // debug for calendar
     template: "pages/calendar.html",
     title: "My Calendar | " + urlPageTitle,
     description: "This is the calendar page",
     init: () => {
       initCalendar();
+      initFullCal();
     },
   },
 };

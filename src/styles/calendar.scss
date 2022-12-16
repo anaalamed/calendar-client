@@ -1,103 +1,134 @@
-.calendar_wrapper {
-  width: 90%;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.12);
-  margin: 0 auto;
+.cal_view_wrapper {
+  margin: 50px 0; 
+  display: flex;
+  justify-content: space-between;
 
-  header {
-   display: flex;
-   align-items: center;
-   padding: 25px 30px 10px;
-   justify-content: space-between;
+  .side_wrapper {
+    width: 20%;
+    background: #fff;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    border-radius: 10px;
 
-   .icons {
-     display: flex;
+    .calendar_wrapper {
+      width: 95%;
+      margin: 10px auto;
+    
+      .side_cal_header {
+       display: flex;
+       align-items: center;
+       padding: 10px 10px 15px;
+       justify-content: space-between;
+    
+       .icons {
+         display: flex;
+    
+        i {
+          height: 20px;
+          width: 20px;
+          margin: 0 1px;
+          cursor: pointer;
+          color: #878787;
+          text-align: center;
+          line-height: 20px;
+          font-size: 1rem;
+          user-select: none;
+          border-radius: 50%;
+        }
+    
+        // i:last-child {
+        //   // margin-right: -10px;
+        // }
+        i:hover {
+          background: #f2f2f2;
+        }
+       }
+    
+       .current-date{
+        font-size: 1.2rem;
+        font-weight: 500;
+        margin: 0;
+      }
+    
+      }
+    
+      .calendar {
+        padding: 5px;
+      
+        ul {
+          display: flex;
+          flex-wrap: wrap;
+          list-style: none;
+          text-align: center;
+          padding-left: 0;
+      
+          li{
+            color: #333;
+            width: calc(100% / 7);
+            font-size: 0.8rem;
+          }
+        }
+      
+        .weeks {
+          margin: 0 auto 5px;
 
-    i {
-      height: 38px;
-      width: 38px;
-      margin: 0 1px;
-      cursor: pointer;
-      color: #878787;
-      text-align: center;
-      line-height: 38px;
-      font-size: 1.9rem;
-      user-select: none;
-      border-radius: 50%;
+          li{
+            font-weight: 500;
+            cursor: default;
+          }
+        }
+      
+        .days {
+          margin-bottom: 10px;
+      
+          li {
+            z-index: 1;
+            cursor: pointer;
+            position: relative;
+            margin-top: 15px;
+          }
+      
+          li.inactive {
+            color: #aaa;
+            pointer-events: none;
+          }
+          li.active {
+            color: #fff;
+          }
+          li::before {
+            position: absolute;
+            content: "";
+            left: 50%;
+            top: 50%;
+            height: 30px;
+            width: 30px;
+            z-index: -1;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+          }
+          li.active::before{
+            background: #9B59B6;
+          }
+          li:not(.active):hover::before{
+            background: #f2f2f2;
+          }
+        }
+      }
     }
-
-    i:last-child {
-      margin-right: -10px;
-    }
-    i:hover {
-      background: #f2f2f2;
-    }
-   }
-
-   .current-date{
-    font-size: 1.45rem;
-    font-weight: 500;
   }
 
-  }
 
-  .calendar {
-    padding: 20px;
-  
-    ul {
-      display: flex;
-      flex-wrap: wrap;
-      list-style: none;
-      text-align: center;
-  
-      li{
-        color: #333;
-        width: calc(100% / 7);
-        font-size: 1.07rem;
-      }
-    }
-  
-    .weeks li{
-      font-weight: 500;
-      cursor: default;
-    }
-  
-    .days {
-      margin-bottom: 20px;
-  
-      li {
-        z-index: 1;
-        cursor: pointer;
-        position: relative;
-        margin-top: 30px;
-      }
-  
-      li.inactive {
-        color: #aaa;
-      }
-      li.active {
-        color: #fff;
-      }
-      li::before {
-        position: absolute;
-        content: "";
-        left: 50%;
-        top: 50%;
-        height: 40px;
-        width: 40px;
-        z-index: -1;
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-      }
-      li.active::before{
-        background: #9B59B6;
-      }
-      li:not(.active):hover::before{
-        background: #f2f2f2;
-      }
-    }
-  }
+  .main_wrapper {
+    width: 75%;
 
+    #calendar {
+      max-width: 100%;
+    }
+
+  }
 }
+
+
+
+
+
 

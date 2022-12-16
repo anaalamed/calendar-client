@@ -1,3 +1,10 @@
+import $ from "jquery";
+import pubSub from "./pubsub";
+
+const publishEvent = (data) => {
+  pubSub.publish("anEvent", data);
+};
+
 const initCalendar = () => {
   const daysTag = document.querySelector(".days"),
     currentDate = document.querySelector(".current-date"),
@@ -8,7 +15,6 @@ const initCalendar = () => {
     currYear = date.getFullYear(),
     currMonth = date.getMonth();
 
-  // storing full name of all months in array
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   const renderCalendar = () => {
@@ -39,8 +45,8 @@ const initCalendar = () => {
   };
   renderCalendar();
 
+  // change month
   prevNextIcon.forEach((icon) => {
-    // getting prev and next icons
     icon.addEventListener("click", () => {
       // adding click event on both icons
       // if clicked icon is previous icon then decrement current month by 1 else increment it by 1
@@ -50,6 +56,7 @@ const initCalendar = () => {
         // if current month is less than 0 or greater than 11
         // creating a new date of current year & month and pass it as date value
         date = new Date(currYear, currMonth);
+        console.log(date);
         currYear = date.getFullYear(); // updating current year with new date year
         currMonth = date.getMonth(); // updating current month with new date month
       } else {
@@ -58,6 +65,18 @@ const initCalendar = () => {
       renderCalendar(); // calling renderCalendar function
     });
   });
+
+  // set new date
+  $(document).on("click", ".days li", function () {
+    let setDay = $(this).text(),
+      textMonth = $(".current-date").text().split(" ")[0],
+      setYear = $(".current-date").text().split(" ")[1];
+    let setMonth = months.findIndex((month) => month == textMonth);
+
+    let newDate = new Date(setYear, setMonth, setDay);
+    date = newDate;
+    publishEvent(date);
+  });
 };
 
-export { initCalendar };
+export { initCalendar, publishEvent };
