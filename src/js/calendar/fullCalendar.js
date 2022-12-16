@@ -1,4 +1,7 @@
 import $ from "jquery";
+// import * as $ from "jquery";
+// import "bootstrap";
+
 import { Calendar } from "@fullcalendar/core";
 import adaptivePlugin from "@fullcalendar/adaptive";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -12,6 +15,7 @@ import pubSub from "./pubsub";
 
 const initFullCal = () => {
   console.log("initFullCal");
+
   $(document).ready(function () {
     let calendarEl = document.getElementById("calendar");
 
@@ -29,21 +33,9 @@ const initFullCal = () => {
         right: "timeGridDay,timeGridWeek,dayGridMonth,listWeek",
       },
       initialView: "timeGridWeek",
-      views: {
-        resourceTimelineThreeDays: {
-          type: "resourceTimeline",
-          duration: { days: 3 },
-          buttonText: "3 day",
-        },
-      },
+      views: {},
       events: events,
-      eventClick: function (info) {
-        alert("Event: " + info.event.title);
-        console.log("ext", info.event.extendedProps);
-
-        // change the border color just for fun
-        info.el.style.borderColor = "red";
-      },
+      eventClick: (info) => eventHandler(info),
     });
 
     calendar.render();
@@ -55,6 +47,26 @@ const initFullCal = () => {
       calendar.gotoDate(date);
     });
   });
+};
+
+const eventHandler = (info) => {
+  // alert("Event: " + info.event.title);
+  console.log("ext", info.event.extendedProps);
+
+  jQuery.noConflict();
+  console.log($("#modal"));
+  $("#modal").addClass("show");
+  // $("#modal").modal({
+  //   keyboard: false,
+  // });
+  // $("#modal").modal("show");
+  $("#modal").on("shown.bs.modal", function () {
+    console.log("boom");
+  });
+  // window.$("#modal").modal("show");
+
+  // change the border color just for fun
+  info.el.style.borderColor = "red";
 };
 
 export { initFullCal };

@@ -6,6 +6,11 @@ module.exports = {
     filename: "main.js",
     path: path.resolve(__dirname, "dist"),
   },
+  resolve: {
+    alias: {
+      core: path.join(__dirname, "core"),
+    },
+  },
   mode: "development",
   module: {
     rules: [
