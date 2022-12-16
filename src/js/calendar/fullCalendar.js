@@ -1,7 +1,3 @@
-import $ from "jquery";
-// import * as $ from "jquery";
-// import "bootstrap";
-
 import { Calendar } from "@fullcalendar/core";
 import adaptivePlugin from "@fullcalendar/adaptive";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -35,7 +31,11 @@ const initFullCal = () => {
       initialView: "timeGridWeek",
       views: {},
       events: events,
-      eventClick: (info) => eventHandler(info),
+      // eventClick: (info) => eventHandler(info),    // modal is not  function!
+      eventClick: (info) => {
+        console.log("ext", info.event.extendedProps);
+        $("#eventModal").modal("show");
+      },
     });
 
     calendar.render();
@@ -49,24 +49,13 @@ const initFullCal = () => {
   });
 };
 
-const eventHandler = (info) => {
-  // alert("Event: " + info.event.title);
-  console.log("ext", info.event.extendedProps);
+// ---- try to understand why not callback -----
+// const eventHandler = (info) => {
+//   console.log("ext", info.event.extendedProps);
+//   $("#modal").modal("show");
 
-  jQuery.noConflict();
-  console.log($("#modal"));
-  $("#modal").addClass("show");
-  // $("#modal").modal({
-  //   keyboard: false,
-  // });
-  // $("#modal").modal("show");
-  $("#modal").on("shown.bs.modal", function () {
-    console.log("boom");
-  });
-  // window.$("#modal").modal("show");
-
-  // change the border color just for fun
-  info.el.style.borderColor = "red";
-};
+//   // change the border color just for fun
+//   info.el.style.borderColor = "red";
+// };
 
 export { initFullCal };

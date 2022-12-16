@@ -1,5 +1,4 @@
 import $ from "jquery";
-import WordCloud from "wordcloud";
 
 const initHomePage = () => {
   console.log("initHomePage");
