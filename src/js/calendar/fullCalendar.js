@@ -11,6 +11,7 @@ import pubSub from "./pubsub";
 
 const initFullCal = () => {
   console.log("initFullCal");
+  $("#eventModal").modal("show"); // modal debug
 
   $(document).ready(function () {
     let calendarEl = document.getElementById("calendar");

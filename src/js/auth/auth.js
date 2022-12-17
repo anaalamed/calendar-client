@@ -1,5 +1,6 @@
 import $ from "jquery";
-import { createUser, loginUser, login } from "./rest";
+import { createUser, login } from "./rest";
+import { redirectToGoogle } from "./google";
 
 const initRegistration = () => {
   console.log("init registration ");
@@ -34,9 +35,14 @@ const initLogin = () => {
     const password = $(".form-floating #password").val();
 
     console.log(user);
-    //loginUser(user);
     login(email, password);
   });
 };
 
-export { initLogin, initRegistration };
+const initGoogle = async () => {
+  console.log("initGoogle");
+
+  redirectToGoogle();
+};
+
+export { initLogin, initRegistration, initGoogle };

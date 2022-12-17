@@ -1,4 +1,4 @@
-import { initLogin, initRegistration } from "./auth/auth";
+import { initLogin, initRegistration, initGoogle } from "./auth/auth";
 import { initCalendar } from "./calendar/sideCalendar";
 import { initFullCal } from "./calendar/fullCalendar";
 import { initHomePage } from "./home/home";
@@ -44,6 +44,7 @@ const urlRoutes = {
     },
   },
   "/login": {
+    // "/": {
     template: "pages/login.html",
     title: "Log In | " + urlPageTitle,
     description: "This is the log in page",
@@ -51,8 +52,17 @@ const urlRoutes = {
       initLogin();
     },
   },
-  "/calendar": {
-    // "/": {
+  // "/login/oauth2/code/google": {
+  "/oauth2/authorization/google": {
+    template: "",
+    title: "Google Log In | " + urlPageTitle,
+    description: "This is the Google log in page",
+    init: () => {
+      initGoogle();
+    },
+  },
+  // "/calendar": {
+  "/": {
     // debug for calendar
     template: "pages/calendar.html",
     title: "My Calendar | " + urlPageTitle,
