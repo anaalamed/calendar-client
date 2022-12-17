@@ -43,8 +43,8 @@ const urlRoutes = {
       initRegistration();
     },
   },
-  // "/login": {
-  "/": {
+  "/login": {
+    // "/": {
     template: "pages/login.html",
     title: "Log In | " + urlPageTitle,
     description: "This is the log in page",
@@ -61,8 +61,8 @@ const urlRoutes = {
       initGoogle();
     },
   },
-  "/calendar": {
-    // "/": {
+  // "/calendar": {
+  "/": {
     // debug for calendar
     template: "pages/calendar.html",
     title: "My Calendar | " + urlPageTitle,
