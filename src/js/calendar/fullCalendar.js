@@ -32,11 +32,9 @@ const initFullCal = () => {
       initialView: "timeGridWeek",
       views: {},
       events: events,
-      // eventClick: (info) => eventHandler(info),    // modal is not  function!
-      eventClick: (info) => {
-        console.log("ext", info.event.extendedProps);
-        $("#eventModal").modal("show");
-      },
+      // timeZone: 'America/New_York',
+
+      eventClick: (info) => eventHandler(info),
     });
 
     calendar.render();
@@ -50,13 +48,32 @@ const initFullCal = () => {
   });
 };
 
-// ---- try to understand why not callback -----
-// const eventHandler = (info) => {
-//   console.log("ext", info.event.extendedProps);
-//   $("#modal").modal("show");
+const eventHandler = (info) => {
+  console.log("info", info.event);
+  console.log("ext", info.event.extendedProps);
+  console.log("type ", typeof info.event._instance.range.start);
+  console.log("value ", info.event._instance.range.start);
 
-//   // change the border color just for fun
-//   info.el.style.borderColor = "red";
-// };
+  $("#eventModal").modal("show");
+  $(".modal-title").text(info.event._def.title);
+  $(".row.field.public .content").text(info.event.extendedProps.public);
+  // $(".row.field.time .content").text(info.event._instance.range.start.toUTCString);
+  // $(".row.field.date .content").text(info.event._instance.range.start);
+  // $(".row.field.duration .content").text(info.event._instance.range.start);
+  $(".row.field.location .content").text(info.event.extendedProps.location);
+  $(".field.description .content").text(info.event.extendedProps.description);
+
+  $(".field.organizer div").text(info.event.extendedProps.organizer);
+  const admins = info.event.extendedProps.admins;
+  const guests = info.event.extendedProps.guests;
+
+  admins.forEach((admin) => {
+    $(".field.admins div.listWrapper ul").append(`<li>${admin}</li>`);
+  });
+
+  guests.forEach((guest) => {
+    $(".field.guests div.listWrapper ul").append(`<li>${guest}</li>`);
+  });
+};
 
 export { initFullCal };
