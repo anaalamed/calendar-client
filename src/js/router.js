@@ -61,8 +61,8 @@ const urlRoutes = {
       initGoogle();
     },
   },
-  // "/calendar": {
-  "/": {
+  "/calendar": {
+    // "/": {
     // debug for calendar
     template: "pages/calendar.html",
     title: "My Calendar | " + urlPageTitle,
