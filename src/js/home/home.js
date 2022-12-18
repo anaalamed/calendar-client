@@ -3,7 +3,7 @@ import $ from "jquery";
 const initHomePage = () => {
   console.log("initHomePage");
   $(document).ready(function () {
-    const myTags = ["Java", "Spring Boot", "JPA", "Hibernate", "MySQL", "JavaScript", "CSS", "SCSS", "HTML", "git", "jQuery", "Bootstrap", "Firebase", "SPA", "Google Auth"];
+    const myTags = ["Java", "Spring Boot", "JPA", "Hibernate", "MySQL", "JavaScript", "CSS", "SCSS", "HTML", "git", "jQuery", "Bootstrap", "Firebase", "SPA", "Google Auth", "Tests", "Mock", "Webpack", "Filters"];
 
     var tagCloud = TagCloud(".techologies", myTags, {
       // radius in px
