@@ -52,17 +52,8 @@ const urlRoutes = {
       initLogin();
     },
   },
-  // "/login/oauth2/code/google": {
-  "/oauth2/authorization/google": {
-    template: "",
-    title: "Google Log In | " + urlPageTitle,
-    description: "This is the Google log in page",
-    init: () => {
-      initGoogle();
-    },
-  },
-  "/calendar": {
-    // "/": {
+  // "/calendar": {
+  "/": {
     // debug for calendar
     template: "pages/calendar.html",
     title: "My Calendar | " + urlPageTitle,
@@ -72,6 +63,15 @@ const urlRoutes = {
       initFullCal();
     },
   },
+  // "/login/oauth2/code/google": {
+  // "/oauth2/authorization/google": {
+  //   template: "",
+  //   title: "Google Log In | " + urlPageTitle,
+  //   description: "This is the Google log in page",
+  //   init: () => {
+  //     initGoogle();
+  //   },
+  // },
 };
 
 // create a function that watches the url and calls the urlLocationHandler
