@@ -37,7 +37,7 @@ const initFullCal = () => {
       events: events,
       customButtons: {
         addEventButton: {
-          text: "Add event",
+          text: "Add Event",
           click: function () {
             $("#eventEditModal").modal("show"); // modal debug
 
@@ -46,17 +46,17 @@ const initFullCal = () => {
 
               calendar.addEvent({
                 title: $("#eventEditModal .modal-header .title").val(),
-                start: "2022-12-19T02:30:00",
-                end: "2022-12-19T11:00:00",
+                start: $("#date").val()+"T"+$("#time").val(),
+                end: "2022-12-19T20:00:00",
                 extendedProps: {
-                  public: true,
-                  location: "Tel Aviv",
+                  public: $("#checkbox").is(':checked'),
+                  location: $("#location").val(),
                   guests: ["ana", "leon"],
                   admins: ["mostafa", "assaf", "tzahi", "leon"],
                   organizer: "mostafa",
-                  duration: 2.5,
+                  duration: $("#duration").val(),
                 },
-                description: "Argentina woooooon!",
+                description: $("#description").val(),
               });
             });
           },
@@ -64,10 +64,22 @@ const initFullCal = () => {
       },
       // timeZone: 'America/New_York',
 
+      
       eventClick: (info) => eventHandler(info),
     });
 
+    // events of the user
+    var userEvents = calendar.currentDataManager.props.optionOverrides.events;
+    userEvents[0].end = "2022-12-18T05:00:00";
+    console.log(userEvents);
+    // const start = new Date(userEvents[0].start);
+    // console.log(userEvents[0]);
+    // userEvents[0].end = start.setHours(5);
+    // userEvents[0].end = userEvents[0].end.toISOString();
+    // console.log(userEvents[0]);
+
     calendar.render();
+
 
     // change date from side calendar
     pubSub.subscribe("anEvent", (date) => {
@@ -75,7 +87,9 @@ const initFullCal = () => {
       console.log(date);
       calendar.gotoDate(date);
     });
+
   });
+
 };
 
 const eventHandler = (info) => {
@@ -88,7 +102,7 @@ const eventHandler = (info) => {
   var myDuration = info.event.extendedProps.duration;
   console.log("duration ", myHour);
 
-  info.event.setEnd(info.event.start.setHours(myHour + myDuration, (myHour + myDuration - (myHour + parseInt(myDuration))) * 60 + myMin));
+  //info.event.setEnd(info.event.start.setHours(myHour + myDuration, (myHour + myDuration - (myHour + parseInt(myDuration))) * 60 + myMin));
   $("#eventModal").modal("show");
   $(".modal-title").text(info.event._def.title);
   $(".row.field.public .content").text(info.event.extendedProps.public);
