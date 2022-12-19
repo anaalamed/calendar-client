@@ -9,16 +9,11 @@ const initRouter = async () => {
   // create document click that watches the nav links only
   document.addEventListener("click", (e) => {
     const { target } = e;
-    if (!target.matches("div a")) {
+    if (target.matches("header div a")) {
+      // header nav
       e.preventDefault();
-      return;
+      urlRoute();
     }
-    if (target.matches(".login-link")) {
-      // github external link
-      return;
-    }
-    e.preventDefault();
-    urlRoute();
   });
 };
 
@@ -56,8 +51,8 @@ const urlRoutes = {
       initLogin();
     },
   },
-  "/calendar": {
-    // "/": {
+  // "/calendar": {
+  "/": {
     // debug for calendar
     template: "pages/calendar.html",
     title: "My Calendar | " + urlPageTitle,

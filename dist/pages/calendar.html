@@ -27,6 +27,7 @@
     <div id="calendar"></div>
   </div>
 
+  <!-- event modal  -->
   <div class="modal modal-lg fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -79,7 +80,88 @@
               <div class="guests field">
                 <h4>Guests:</h4>
                 <div class="row addGuest">
-                  <input class="col-md-10 add bg" />
+                  <input class="col-md-9 add bg" />
+                  <div class="col-md-2 addButton bg">+</div>
+                </div>
+
+                <div class="listWrapper content bg">
+                  <ul></ul>
+                </div>
+              </div>
+
+              <div class="admins field">
+                <h4>Admins</h4>
+                <div class="listWrapper content bg">
+                  <ul></ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- edit event modal  -->
+  <div class="modal modal-lg fade" id="eventEditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Event title</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="data">
+              <div class="row field public">
+                <div class="col-md-4">Public?</div>
+                <input type="checkbox" name="public" value="public" class="col-md-2" />
+              </div>
+              <div class="row field time">
+                <div class="col-md-4">Time:</div>
+                <input type="time" class="col-md-7" />
+              </div>
+              <div class="row field date">
+                <div class="col-md-4">Date:</div>
+                <input type="date" class="col-md-7" />
+              </div>
+              <div class="row field duration">
+                <div class="col-md-4">Duration:</div>
+                <input type="number" class="col-md-3" />
+
+                <div class="col-md-6 mx-auto content"></div>
+              </div>
+              <div class="row field location">
+                <div class="col-md-4">Location:</div>
+                <input type="text" class="col-md-7" />
+              </div>
+              <div class="field description">
+                <div class="col-md-4">Description:</div>
+                <textarea class="col-md-7"></textarea>
+              </div>
+              <div class="field attachments">
+                <div class="col-md-4">Attachments:</div>
+                <div class="col-md-8 content"></div>
+              </div>
+            </div>
+
+            <div class="users">
+              <div class="organizer field">
+                <h4>Organizer:</h4>
+                <div class="">Leon@gmail.com</div>
+              </div>
+
+              <div class="guests field">
+                <h4>Guests:</h4>
+                <div class="row addGuest">
+                  <input class="col-md-9 add bg" />
                   <div class="col-md-2 addButton bg">+</div>
                 </div>
 
