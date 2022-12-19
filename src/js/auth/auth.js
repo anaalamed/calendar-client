@@ -1,6 +1,5 @@
 import $ from "jquery";
 import { createUser, login } from "./rest";
-import { redirectToGoogle } from "./google";
 
 const initRegistration = () => {
   console.log("init registration ");
@@ -39,10 +38,9 @@ const initLogin = () => {
   });
 };
 
-const initGoogle = async () => {
-  console.log("initGoogle");
-
-  redirectToGoogle();
+const initGithub = async () => {
+  console.log("initGithub");
+  // take a code from url and ro req to auth/loginGithub?code=...
 };
 
-export { initLogin, initRegistration, initGoogle };
+export { initLogin, initRegistration, initGithub };
