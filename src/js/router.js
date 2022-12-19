@@ -1,4 +1,4 @@
-import { initLogin, initRegistration, initGoogle } from "./auth/auth";
+import { initLogin, initRegistration, initGithub } from "./auth/auth";
 import { initCalendar } from "./calendar/sideCalendar";
 import { initFullCal } from "./calendar/fullCalendar";
 import { initHomePage } from "./home/home";
@@ -9,12 +9,11 @@ const initRouter = async () => {
   // create document click that watches the nav links only
   document.addEventListener("click", (e) => {
     const { target } = e;
-    if (!target.matches("div a")) {
+    if (target.matches("header div a")) {
+      // header nav
       e.preventDefault();
-      return;
+      urlRoute();
     }
-    e.preventDefault();
-    urlRoute();
   });
 };
 
@@ -63,29 +62,33 @@ const urlRoutes = {
       initFullCal();
     },
   },
-  // "/login/oauth2/code/google": {
-  // "/oauth2/authorization/google": {
-  //   template: "",
-  //   title: "Google Log In | " + urlPageTitle,
-  //   description: "This is the Google log in page",
-  //   init: () => {
-  //     initGoogle();
-  //   },
-  // },
+  "/github": {
+    template: "pages/login.html",
+    title: "Github Log In | " + urlPageTitle,
+    description: "This is the Github log in page",
+    init: () => {
+      initGithub();
+    },
+  },
 };
 
 // create a function that watches the url and calls the urlLocationHandler
 const urlRoute = async (event) => {
   event = event || window.event; // get window.event if event argument not provided
   event.preventDefault();
-  // window.history.pushState(state, unused, target link);
+  console.log(event.target.href);
+  // if (event.target.href.includes("localhost")) {
+  // }
   window.history.pushState({}, "", event.target.href);
   await urlLocationHandler();
+  // window.history.pushState(state, unused, target link);
 };
 
 // create a function that handles the url location
 const urlLocationHandler = async () => {
+  console.log("urlLocationHandler");
   const location = window.location.pathname; // get the url path
+  console.log(location);
 
   if (location.length == 0) {
     location = "/";
