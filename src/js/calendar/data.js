@@ -2,7 +2,6 @@ export const events = [
   {
     id: "1",
     start: "2022-12-18T02:30:00",
-    end: "2022-12-18T11:00:00",
     title: "The first dynamic event",
     extendedProps: {
       public: true,
@@ -11,6 +10,7 @@ export const events = [
       admins: ["mostafa", "assaf", "tzahi", "leon"],
       organizer: "mostafa",
       duration: 2.5,
+    
     },
     description: "Argentina woooooon!",
   },
