@@ -1,21 +1,21 @@
-.modal-content {
-    .modal-body {
-        .container-fluid {    
-            .field {
-                input, textarea {
-                    margin-bottom: 8px;
-                    border-radius: 10px;
-                    height: 35px;
-                }
+#eventEditModal {
 
-                textarea {
-                    margin-bottom: 8px;
-                    border-radius: 10px;
-                }
-
-
-            }
-        }
-        
+    .modal-header input.title {
+        width: 90%;
+        margin: 0 auto;
     }
+
+    input, textarea {
+        margin-bottom: 8px;
+        border-radius: 10px;
+        height: 35px;
+    }
+
+    textarea {
+        margin-bottom: 8px;
+        border-radius: 10px;
+    }
+
+
+
 }

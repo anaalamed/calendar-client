@@ -111,7 +111,8 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLongTitle">Event title</h5>
+          <!-- <h5 class="modal-title" id="exampleModalLongTitle"></h5> -->
+          <input type="text" class="title" />
           <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -135,8 +136,6 @@
               <div class="row field duration">
                 <div class="col-md-4">Duration:</div>
                 <input type="number" class="col-md-3" />
-
-                <div class="col-md-6 mx-auto content"></div>
               </div>
               <div class="row field location">
                 <div class="col-md-4">Location:</div>
@@ -155,33 +154,33 @@
             <div class="users">
               <div class="organizer field">
                 <h4>Organizer:</h4>
-                <div class="">Leon@gmail.com</div>
-              </div>
+                <div class="organizer"></div>
 
-              <div class="guests field">
-                <h4>Guests:</h4>
-                <div class="row addGuest">
-                  <input class="col-md-9 add bg" />
-                  <div class="col-md-2 addButton bg">+</div>
+                <div class="guests field">
+                  <h4>Guests:</h4>
+                  <div class="row addGuest">
+                    <input class="col-md-9 add bg" />
+                    <div class="col-md-2 addButton bg">+</div>
+                  </div>
+
+                  <div class="listWrapper content bg">
+                    <ul></ul>
+                  </div>
                 </div>
 
-                <div class="listWrapper content bg">
-                  <ul></ul>
-                </div>
-              </div>
-
-              <div class="admins field">
-                <h4>Admins</h4>
-                <div class="listWrapper content bg">
-                  <ul></ul>
+                <div class="admins field">
+                  <h4>Admins</h4>
+                  <div class="listWrapper content bg">
+                    <ul></ul>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Save</button>
+          </div>
         </div>
       </div>
     </div>

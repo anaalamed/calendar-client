@@ -7,33 +7,61 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import momentPlugin from "@fullcalendar/moment";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import { events } from "./data";
+import { addEvent } from "./event";
 import pubSub from "./pubsub";
 import { duration } from "moment";
 
 const initFullCal = () => {
   console.log("initFullCal");
-  $("#eventEditModal").modal("show"); // modal debug
+  // $("#eventEditModal").modal("show"); // modal debug
 
   $(document).ready(function () {
     let calendarEl = document.getElementById("calendar");
 
     let calendar = new Calendar(calendarEl, {
       plugins: [adaptivePlugin, interactionPlugin, dayGridPlugin, listPlugin, timeGridPlugin, resourceTimelinePlugin, momentPlugin],
-      // titleFormat: "DD/MM/YYYY",
+      titleFormat: "MM/YYYY",
       schedulerLicenseKey: "XXX",
       now: momentPlugin.now,
       editable: true, // enable draggable events
       aspectRatio: 1.8,
       scrollTime: "00:00", // undo default 6am scrollTime
       headerToolbar: {
-        left: "today prev,next",
+        left: "today addEventButton",
         center: "title",
-        right: "timeGridDay,timeGridWeek,dayGridMonth,listWeek",
+        right: "prev,next timeGridDay,timeGridWeek,dayGridMonth,listWeek",
       },
       nowIndicator: true,
       initialView: "timeGridWeek",
       views: {},
       events: events,
+      customButtons: {
+        addEventButton: {
+          text: "Add event",
+          click: function () {
+            $("#eventEditModal").modal("show"); // modal debug
+
+            $(document).on("click", "#eventEditModal .modal-footer button", function (event) {
+              console.log($(".modal-header .title").val());
+
+              calendar.addEvent({
+                title: $("#eventEditModal .modal-header .title").val(),
+                start: "2022-12-19T02:30:00",
+                end: "2022-12-19T11:00:00",
+                extendedProps: {
+                  public: true,
+                  location: "Tel Aviv",
+                  guests: ["ana", "leon"],
+                  admins: ["mostafa", "assaf", "tzahi", "leon"],
+                  organizer: "mostafa",
+                  duration: 2.5,
+                },
+                description: "Argentina woooooon!",
+              });
+            });
+          },
+        },
+      },
       // timeZone: 'America/New_York',
 
       eventClick: (info) => eventHandler(info),
