@@ -37,7 +37,7 @@ const initFullCal = () => {
       events: events,
       customButtons: {
         addEventButton: {
-          text: "Add event",
+          text: "Add Event",
           click: function () {
             $("#eventEditModal").modal("show"); // modal debug
 
@@ -46,17 +46,17 @@ const initFullCal = () => {
 
               calendar.addEvent({
                 title: $("#eventEditModal .modal-header .title").val(),
-                start: "2022-12-19T02:30:00",
-                end: "2022-12-19T11:00:00",
+                start: $("#date").val()+"T"+$("#time").val(),
+                end: "2022-12-19T20:00:00",
                 extendedProps: {
-                  public: true,
-                  location: "Tel Aviv",
+                  public: $("#checkbox").is(':checked'),
+                  location: $("#location").val(),
                   guests: ["ana", "leon"],
                   admins: ["mostafa", "assaf", "tzahi", "leon"],
                   organizer: "mostafa",
-                  duration: 2.5,
+                  duration: $("#duration").val(),
                 },
-                description: "Argentina woooooon!",
+                description: $("#description").val(),
               });
             });
           },
@@ -102,7 +102,7 @@ const eventHandler = (info) => {
   var myDuration = info.event.extendedProps.duration;
   console.log("duration ", myHour);
 
-  info.event.setEnd(info.event.start.setHours(myHour + myDuration, (myHour + myDuration - (myHour + parseInt(myDuration))) * 60 + myMin));
+  //info.event.setEnd(info.event.start.setHours(myHour + myDuration, (myHour + myDuration - (myHour + parseInt(myDuration))) * 60 + myMin));
   $("#eventModal").modal("show");
   $(".modal-title").text(info.event._def.title);
   $(".row.field.public .content").text(info.event.extendedProps.public);
