@@ -59,12 +59,13 @@ const createUser = (user) => {
 };
 
 
-const getAllRolesByUserId = (userId) => {
+const getAllEventsByUser = (userId) => {
   const FetchPromise = axios({
     method: "GET",
-    url: serverAddress + "/role/getRoleByUserId?userId=" +userId,
+    url: serverAddress + "/event/getEventsByUserId",
     headers: {
       "Content-Type": "application/json",
+      "token": sessionStorage.getItem("token")
     },
     data: {
     },
@@ -79,4 +80,4 @@ const getAllRolesByUserId = (userId) => {
     });
 };
 
-export { createUser, login , getAllRolesByUserId};
+export { createUser, login , getAllEventsByUser};

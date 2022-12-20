@@ -1,4 +1,4 @@
-import {getAllRolesByUserId} from "../rest";
+import {getAllEventsByUser} from "../rest";
 
 const addEvent = (calendar) => {
   // calendar.addEvent( event [, source ] )
@@ -6,13 +6,13 @@ const addEvent = (calendar) => {
 
 const initCalendar = () => {
 
-  $(document).on("click", "#getAllRolesBtn", (event) => {
+  $(document).on("click", "#getAllEventsBtn", (event) => {
 
-    console.log("Inside Get All Roles By User Id!");
+    console.log("Inside Get All Events By User Id!");
     event.preventDefault();
 
     console.log(sessionStorage.getItem("userId"));
-    getAllRolesByUserId(sessionStorage.getItem("userId"));
+    getAllEventsByUser(sessionStorage.getItem("userId"));
   });
   
 }
