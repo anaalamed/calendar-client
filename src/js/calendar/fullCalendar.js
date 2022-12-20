@@ -7,7 +7,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import momentPlugin from "@fullcalendar/moment";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import { events } from "./data";
-import { addEvent } from "./event";
+import { addEvent } from "./calendar";
 import pubSub from "./pubsub";
 import { duration } from "moment";
 
