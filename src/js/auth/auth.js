@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { createUser, login } from "./rest";
+import { createUser, login } from "../rest";
 
 const initRegistration = () => {
   console.log("init registration ");
@@ -19,6 +19,8 @@ const initRegistration = () => {
   });
 };
 
+
+
 const initLogin = () => {
   console.log("init login");
   // -------------------- login -------------------------------
@@ -34,9 +36,15 @@ const initLogin = () => {
     const password = $(".form-floating #password").val();
 
     console.log(user);
-    login(email, password);
+    login(user);
+  });
+
+  $(document).on("click", "#loginCloseBtn", function (event) {
+    //window.location.replace("http://localhost:9000/calendar");
   });
 };
+
+
 
 const initGithub = async () => {
   console.log("initGithub");
