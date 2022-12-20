@@ -58,4 +58,25 @@ const createUser = (user) => {
     });
 };
 
-export { createUser, login };
+
+const getAllRolesByUserId = (userId) => {
+  const FetchPromise = axios({
+    method: "GET",
+    url: serverAddress + "/role/getRoleByUserId?userId=" +userId,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: {
+    },
+  });
+
+  FetchPromise
+    .then((res) => {
+      console.log(res.data.data)
+    })
+    .catch((error) => {
+      console.log(error.response.data.message)
+    });
+};
+
+export { createUser, login , getAllRolesByUserId};

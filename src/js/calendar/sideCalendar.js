@@ -5,7 +5,7 @@ const publishEvent = (data) => {
   pubSub.publish("anEvent", data);
 };
 
-const initCalendar = () => {
+const initSideCalendar = () => {
   const daysTag = document.querySelector(".days"),
     currentDate = document.querySelector(".current-date"),
     prevNextIcon = document.querySelectorAll(".icons i");
@@ -79,4 +79,4 @@ const initCalendar = () => {
   });
 };
 
-export { initCalendar, publishEvent };
+export { initSideCalendar, publishEvent };
