@@ -58,26 +58,85 @@ const createUser = (user) => {
     });
 };
 
-
 const getAllEventsByUser = (userId) => {
   const FetchPromise = axios({
     method: "GET",
     url: serverAddress + "/event/getEventsByUserId",
     headers: {
       "Content-Type": "application/json",
-      "token": sessionStorage.getItem("token")
+      token: sessionStorage.getItem("token"),
+    },
+    data: {},
+  });
+
+  FetchPromise.then((res) => {
+    console.log(res.data.data);
+  }).catch((error) => {
+    console.log(error.response.data.message);
+  });
+};
+
+const inviteGuest = (email) => {
+  const FetchPromise = axios({
+    method: "POST",
+    url: serverAddress + "/role/inviteGuest?eventId=" + 10 + "&email=" + email, // Will need to change to eventId later!!!!~~~~~~
+    headers: {
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
+    },
+    data: {},
+  });
+
+  FetchPromise.then((res) => {
+    console.log(res.data.data);
+  }).catch((error) => {
+    console.log(error.response.data.message);
+  });
+};
+
+const removeGuest = (email) => {
+  const FetchPromise = axios({
+    method: "DELETE",
+    url: serverAddress + "/role/removeGuest?eventId=" + 41 + "&email=" + "leon@organizer.com", // Will need to change to eventId & email later!!!!~~~~~~
+    headers: {
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
+    },
+    data: {},
+  });
+
+  FetchPromise.then((res) => {
+    console.log(res.data.data);
+  }).catch((error) => {
+    console.log(error.response.data.message);
+  });
+};
+
+const saveNewEvent = (event) => {
+  const FetchPromise = axios({
+    method: "POST",
+    url: serverAddress + "/event/saveEvent",
+    headers: {
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
     },
     data: {
+      title: event.title,
+      time: event.time,
+      date: event.date,
+      duration: event.duration,
+      location: event.location,
+      description: event.description,
+      attachments: event.attachments,
+      public: event.public,
     },
   });
 
-  FetchPromise
-    .then((res) => {
-      console.log(res.data.data)
-    })
-    .catch((error) => {
-      console.log(error.response.data.message)
-    });
+  FetchPromise.then((res) => {
+    console.log(res.data.data);
+  }).catch((error) => {
+    console.log(error.response.data.message);
+  });
 };
 
-export { createUser, login , getAllEventsByUser};
+export { createUser, login, getAllEventsByUser, inviteGuest, saveNewEvent,removeGuest };

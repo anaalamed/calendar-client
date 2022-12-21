@@ -114,20 +114,20 @@ const eventHandler = (info) => {
 
   admins.forEach((admin) => {
     $(".field.admins div.listWrapper ul").append(`<li class="userWrpper">
+    <div class="adminStatus">status</div>
     <div class="adminEmail">${admin}</div>
+    <div class="adminChangeRole">role</div>
+    <div class="adminRemove">X</div>
     </li>`);
-    // <div class="adminStatus">status</div>
-    // <div class="adminChangeRole">role</div>
-    // <div class="adminRemove">X</div>
   });
 
   guests.forEach((guest) => {
     $(".field.guests div.listWrapper ul").append(`<li class="userWrpper">
-    <div class="questEmail">${guest}</div>
+    <div class="guestStatus">status</div>
+    <div class="guestEmail">${guest}</div>
+    <div class="guestChangeRole">role</div>
+    <div class="guestRemove">X</div>
     </li>`);
-    // <div class="questStatus">status</div>
-    // <div class="guestRemove">X</div>
-    // <div class="guestChangeRole">role</div>
   });
 };
 
