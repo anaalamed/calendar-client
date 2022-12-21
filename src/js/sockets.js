@@ -19,8 +19,8 @@ const onMessageReceived = (payload) => {
 
 const onConnected = () => {
   console.log("---- onConnected ----");
-  stompClient.subscribe("/topic/updates", onMessageReceived);
-  stompClient.send("/app/hello", [], JSON.stringify({ name: "Default user" }));
+  stompClient.subscribe("/notifications", onMessageReceived);
+  // stompClient.send("/app/hello", [], JSON.stringify({ name: "Default user" }));
 };
 
 const openConnection = () => {

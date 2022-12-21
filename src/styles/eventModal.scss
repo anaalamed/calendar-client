@@ -50,6 +50,28 @@
                             list-style: none;
                             text-align: left;
                             padding-left: 5px;
+
+                            li.userWrpper {
+                                display: flex;
+
+                                div {
+                                    padding: 0 5px;
+                                }
+
+                                .adminStatus, .questStatus {
+                                    border: 1px solid green;
+                                }
+
+                                .adminChangeRole, .guestChangeRole {
+                                    border: 1px solid blue;
+                                }
+
+                                .adminRemove,  .guestRemove {
+                                    border:  1px solid red;
+                                }
+
+                                
+                            }
                         }
                     }
                 }
