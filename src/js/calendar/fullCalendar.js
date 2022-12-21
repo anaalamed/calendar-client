@@ -46,10 +46,10 @@ const initFullCal = () => {
 
               calendar.addEvent({
                 title: $("#eventEditModal .modal-header .title").val(),
-                start: $("#date").val()+"T"+$("#time").val(),
+                start: $("#date").val() + "T" + $("#time").val(),
                 end: "2022-12-19T20:00:00",
                 extendedProps: {
-                  public: $("#checkbox").is(':checked'),
+                  public: $("#checkbox").is(":checked"),
                   location: $("#location").val(),
                   guests: ["ana", "leon"],
                   admins: ["mostafa", "assaf", "tzahi", "leon"],
@@ -64,7 +64,6 @@ const initFullCal = () => {
       },
       // timeZone: 'America/New_York',
 
-      
       eventClick: (info) => eventHandler(info),
     });
 
@@ -80,16 +79,13 @@ const initFullCal = () => {
 
     calendar.render();
 
-
     // change date from side calendar
     pubSub.subscribe("anEvent", (date) => {
       console.log("subscrive");
       console.log(date);
       calendar.gotoDate(date);
     });
-
   });
-
 };
 
 const eventHandler = (info) => {
@@ -117,11 +113,21 @@ const eventHandler = (info) => {
   const guests = info.event.extendedProps.guests;
 
   admins.forEach((admin) => {
-    $(".field.admins div.listWrapper ul").append(`<li>${admin}</li>`);
+    $(".field.admins div.listWrapper ul").append(`<li class="userWrpper">
+    <div class="adminEmail">${admin}</div>
+    </li>`);
+    // <div class="adminStatus">status</div>
+    // <div class="adminChangeRole">role</div>
+    // <div class="adminRemove">X</div>
   });
 
   guests.forEach((guest) => {
-    $(".field.guests div.listWrapper ul").append(`<li>${guest}</li>`);
+    $(".field.guests div.listWrapper ul").append(`<li class="userWrpper">
+    <div class="questEmail">${guest}</div>
+    </li>`);
+    // <div class="questStatus">status</div>
+    // <div class="guestRemove">X</div>
+    // <div class="guestChangeRole">role</div>
   });
 };
 
