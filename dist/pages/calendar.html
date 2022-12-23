@@ -93,14 +93,14 @@
                 </div> -->
 
                 <div class="listWrapper content bg">
-                  <ul></ul>
+                  <ul id="guestUsersShow"></ul>
                 </div>
               </div>
 
               <div class="admins field">
                 <h4>Admins</h4>
                 <div class="listWrapper content bg">
-                  <ul></ul>
+                  <ul id="adminUsersShow"></ul>
                 </div>
               </div>
             </div>
@@ -120,7 +120,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <!-- <h5 class="modal-title" id="exampleModalLongTitle"></h5> -->
-          <input type="text" class="title" />
+          <input id="editModalTitle" type="text" class="title" />
           <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -161,11 +161,11 @@
             </div>
 
             <div class="users">
-              <div class="organizer field">
+              <div class="organizer field2">
                 <h4>Organizer:</h4>
-                <div class="organizer"></div>
+                <div id="organizerField" class="organizer"></div>
 
-                <div class="guests field">
+                <div id="guestsField" class="guests field">
                   <h4>Guests:</h4>
                   <div class="row addGuest">
                     <input class="col-md-9 add bg" />
@@ -173,14 +173,14 @@
                   </div>
 
                   <div class="listWrapper content bg">
-                    <ul></ul>
+                    <ul id="guestUsers"></ul>
                   </div>
                 </div>
 
                 <div class="admins field">
                   <h4>Admins</h4>
                   <div class="listWrapper content bg">
-                    <ul></ul>
+                    <ul id="adminUsers"></ul>
                   </div>
                 </div>
               </div>

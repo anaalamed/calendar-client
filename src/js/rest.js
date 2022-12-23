@@ -1,4 +1,5 @@
 import { serverAddress } from "./constants";
+import { calendar } from "../js/calendar/fullCalendar";
 import axios from "axios";
 import $ from "jquery";
 
@@ -20,6 +21,7 @@ const login = (user) => {
       $(".modal-title").text("Log In success");
       $(".modal-body").text("Log In successfull!");
 
+
       sessionStorage.setItem("userId", res.data.data.userId);
       sessionStorage.setItem("token", res.data.data.token);
     })
@@ -27,6 +29,23 @@ const login = (user) => {
       $(".modal-title").text("Log In failed");
       $(".modal-body").text(error.response.data.message);
     });
+
+  const loginGetName = axios({
+    method: "GET",
+    url: serverAddress + "/user",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    params: {
+      email: user.email
+    },
+  });
+  loginGetName.then((res) => {
+    console.log(res.data.data.name);
+    sessionStorage.setItem("currentUser", res.data.data.name);
+  })
+
+
 };
 
 const createUser = (user) => {
@@ -71,15 +90,23 @@ const getAllEventsByUser = (userId) => {
 
   FetchPromise.then((res) => {
     console.log(res.data.data);
+    let myNewEvents = res.data.data;
+    for (let i = 0; i < res.data.data.length; i++) {
+      myNewEvents[i].start = myNewEvents[i].time;
+      myNewEvents[i].myDuration = myNewEvents[i].duration;
+
+    }
+
+    //calendar.addEventSource(myNewEvents);///////////
   }).catch((error) => {
-    console.log(error.response.data.message);
+    console.log(error);
   });
 };
 
 const inviteGuest = (email) => {
   const FetchPromise = axios({
     method: "POST",
-    url: serverAddress + "/role/inviteGuest?eventId=" + 10 + "&email=" + email, // Will need to change to eventId later!!!!~~~~~~
+    url: serverAddress + "/event/inviteGuest?eventId=" + sessionStorage.getItem("currentEventId") + "&email=" + email, // Will need to change to eventId later!!!!~~~~~~
     headers: {
       "Content-Type": "application/json",
       token: sessionStorage.getItem("token"),
@@ -89,6 +116,7 @@ const inviteGuest = (email) => {
 
   FetchPromise.then((res) => {
     console.log(res.data.data);
+    return res.data.data;
   }).catch((error) => {
     console.log(error.response.data.message);
   });
@@ -97,7 +125,7 @@ const inviteGuest = (email) => {
 const removeGuest = (email) => {
   const FetchPromise = axios({
     method: "DELETE",
-    url: serverAddress + "/role/removeGuest?eventId=" + 41 + "&email=" + "leon@organizer.com", // Will need to change to eventId & email later!!!!~~~~~~
+    url: serverAddress + "/event/removeGuest?eventId=" + sessionStorage.getItem("currentEventId") + "&email=" + "leon@organizer.com", // Will need to change to eventId & email later!!!!~~~~~~
     headers: {
       "Content-Type": "application/json",
       token: sessionStorage.getItem("token"),
@@ -112,7 +140,7 @@ const removeGuest = (email) => {
   });
 };
 
-const saveNewEvent = (event) => {
+const saveNewEvent = (event, addGuests) => {
   const FetchPromise = axios({
     method: "POST",
     url: serverAddress + "/event/saveEvent",
@@ -124,19 +152,43 @@ const saveNewEvent = (event) => {
       title: event.title,
       time: event.time,
       date: event.date,
-      duration: event.duration,
+      duration: event.myDuration,
       location: event.location,
       description: event.description,
       attachments: event.attachments,
       public: event.public,
+      user: [],
     },
   });
 
-  FetchPromise.then((res) => {
+  FetchPromise.then(async (res) => {
     console.log(res.data.data);
+    sessionStorage.setItem("currentEventId", res.data.data.id);
+    for (let i = 0; i < addGuests.length; i++){
+      inviteGuest(addGuests[i]);
+      await new Promise(r => setTimeout(r, 2000));
+    }
+           
+    // event.user.push(myGuest);
+    location.reload();
   }).catch((error) => {
     console.log(error.response.data.message);
   });
 };
 
-export { createUser, login, getAllEventsByUser, inviteGuest, saveNewEvent,removeGuest };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export { createUser, login, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest };
