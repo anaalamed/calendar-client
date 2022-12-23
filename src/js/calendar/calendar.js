@@ -1,4 +1,7 @@
-import { getAllEventsByUser, inviteGuest, saveNewEvent,removeGuest } from "../rest";
+import { getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest } from "../rest";
+import { calendar } from "./fullCalendar";
+
+var addGuests = [];
 
 const addEvent = (calendar) => {
   // calendar.addEvent( event [, source ] )
@@ -6,10 +9,7 @@ const addEvent = (calendar) => {
 
 const initCalendar = () => {
   $(document).on("click", "#getAllEventsBtn", (event) => {
-    console.log("Inside Get All Events By User Id!");
     event.preventDefault();
-
-    console.log(sessionStorage.getItem("userId"));
     getAllEventsByUser(sessionStorage.getItem("userId"));
   });
 
@@ -17,16 +17,16 @@ const initCalendar = () => {
     console.log("Inside add guest to event (event modal)");
     event.preventDefault();
     const email = $(".row.addGuest input");
-
+    addGuests.push(email.val());
     console.log($(".row.addGuest input").val());
     $(".field.guests .listWrapper ul").append(`<li class="userWrpper">
-      <div class="questStatus">status</div>
-      <div class="questEmail">${email.val()}</div>
+      <div class="guestStatus">status</div>
+      <div class="guestEmail">${email.val()}</div>
       <div class="guestChangeRole">role</div>
       <div class="guestRemove">X</div>
     </li>`);
 
-    inviteGuest(email.val());
+    //inviteGuest(email.val());
 
     email.val("");
   });
@@ -34,20 +34,26 @@ const initCalendar = () => {
   $(document).on("click", "#SaveNewEventBtn", (event) => {
     console.log("Inside add new event!");
     event.preventDefault();
-
+///////////////////////////////////////
     const eventToAdd = {
-      title:  $(".title").val(),
-      time: $("#time").val(),
-      date: $("#date").val() ,
-      duration: $("#duration").val(),
+      title: $(".title").val(),
+      time: $("#date").val() + "T" + $("#time").val(),
+      date: $("#date").val(),
+      myDuration: $("#duration").val(),
       location: $("#location").val(),
       description: $("#description").val(),
+      organizer: sessionStorage.getItem("currentUser"),
       public: $("#checkbox").is(":checked")
     };
-  
-    console.log(sessionStorage.getItem("userId"));
-    saveNewEvent(eventToAdd);
+    
+    saveNewEvent(eventToAdd,addGuests);
   });
+
+
+
+
+
+
 
   $(document).on("click", ".guestRemove", (event) => {
     console.log("Inside Remove Guest From Event!");

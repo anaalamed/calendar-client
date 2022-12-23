@@ -7,10 +7,12 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import momentPlugin from "@fullcalendar/moment";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import { events } from "./data";
-import { addEvent } from "./calendar";
+import { addEvent, initCalendar } from "./calendar";
 import pubSub from "./pubsub";
-import { duration } from "moment";
+import axios from "axios";
+import { serverAddress } from "../constants";
 
+let calendar;
 const initFullCal = () => {
   console.log("initFullCal");
   // $("#eventEditModal").modal("show"); // modal debug
@@ -18,7 +20,7 @@ const initFullCal = () => {
   $(document).ready(function () {
     let calendarEl = document.getElementById("calendar");
 
-    let calendar = new Calendar(calendarEl, {
+    calendar = new Calendar(calendarEl, {
       plugins: [adaptivePlugin, interactionPlugin, dayGridPlugin, listPlugin, timeGridPlugin, resourceTimelinePlugin, momentPlugin],
       titleFormat: "MM/YYYY",
       schedulerLicenseKey: "XXX",
@@ -40,20 +42,27 @@ const initFullCal = () => {
           text: "Add Event",
           click: function () {
             $("#eventEditModal").modal("show"); // modal debug
+            $("#organizerField").text(sessionStorage.getItem("currentUser"));
+            $("#adminUsers").empty();
+            $("#guestUsers").empty();
+            $("#editModalTitle").val("");
+            $("#date").val("");
+            $("#time").val("");
+            $("#checkbox").val("");
+            $("#location").val("");
+            $("#duration").val("");
+            $("#description").val("");
 
             $(document).on("click", "#eventEditModal .modal-footer button", function (event) {
-              console.log($(".modal-header .title").val());
 
               calendar.addEvent({
-                title: $("#eventEditModal .modal-header .title").val(),
+                title: $("#editModalTitle").val(),
                 start: $("#date").val() + "T" + $("#time").val(),
                 end: "2022-12-19T20:00:00",
                 extendedProps: {
                   public: $("#checkbox").is(":checked"),
                   location: $("#location").val(),
-                  guests: ["ana", "leon"],
-                  admins: ["mostafa", "assaf", "tzahi", "leon"],
-                  organizer: "mostafa",
+                  organizer: sessionStorage.getItem("currentUser"),
                   duration: $("#duration").val(),
                 },
                 description: $("#description").val(),
@@ -65,20 +74,50 @@ const initFullCal = () => {
       // timeZone: 'America/New_York',
 
       eventClick: (info) => eventHandler(info),
+
+    });
+    calendarEl = $('#calendar');
+    //getAllEventsByUser(sessionStorage.getItem("userId"))
+    $(document).ready(function () {
+
+      const FetchPromise = axios({
+        method: "GET",
+        url: serverAddress + "/event/getEventsByUserId",
+        headers: {
+          "Content-Type": "application/json",
+          token: sessionStorage.getItem("token"),
+        },
+        data: {},
+      });
+
+      FetchPromise.then((res) => {
+        let myNewEvents = res.data.data;
+
+
+        for (let i = 0; i < res.data.data.length; i++) {
+          
+          myNewEvents[i].start = myNewEvents[i].time;
+          myNewEvents[i].myDuration = myNewEvents[i].duration;
+          var myHour = new Date(myNewEvents[i].time).getHours();
+          var myMin = new Date(myNewEvents[i].time).getMinutes();
+          var myDuration2 = myNewEvents[i].duration;
+          var calEnd = new Date (myNewEvents[i].time).setHours(myHour + myDuration2, (myHour + myDuration2 - (myHour + parseInt(myDuration2))) * 60 + myMin);
+        
+          myNewEvents[i].end = calEnd;
+        }
+        console.log(myNewEvents);
+        calendar.addEventSource(myNewEvents);///////////
+        
+      }).catch((error) => {
+        console.log(error);
+      });
+
     });
 
-    // events of the user
-    var userEvents = calendar.currentDataManager.props.optionOverrides.events;
-    userEvents[0].end = "2022-12-18T05:00:00";
-    console.log(userEvents);
-    // const start = new Date(userEvents[0].start);
-    // console.log(userEvents[0]);
-    // userEvents[0].end = start.setHours(5);
-    // userEvents[0].end = userEvents[0].end.toISOString();
-    // console.log(userEvents[0]);
+
+
 
     calendar.render();
-
     // change date from side calendar
     pubSub.subscribe("anEvent", (date) => {
       console.log("subscrive");
@@ -89,14 +128,26 @@ const initFullCal = () => {
 };
 
 const eventHandler = (info) => {
-  console.log("info", info.event);
-  console.log("ext", info.event.extendedProps);
-  console.log("type ", typeof info.event._instance.range.start);
-  console.log("value ", info.event._instance.range.start);
-  var myHour = info.event.start.getHours();
-  var myMin = info.event.start.getMinutes();
-  var myDuration = info.event.extendedProps.duration;
-  console.log("duration ", myHour);
+
+ 
+  var theRoles = info.event.extendedProps.roles
+  var organizer;
+  var admins = [];
+  var guests = [];
+  sessionStorage.setItem("currentEventId",info.event.id);
+
+  for (let i = 0; i < theRoles.length; i++) {
+    if (theRoles[i].roleType == 'ORGANIZER')
+      organizer = theRoles[i].user.email;
+    else if (theRoles[i].roleType == 'ADMIN')
+      admins.push(theRoles[i]);
+    else 
+      guests.push(theRoles[i]);
+  }
+  console.log(theRoles);
+  console.log(organizer);
+  console.log(admins);
+  console.log(guests);
 
   //info.event.setEnd(info.event.start.setHours(myHour + myDuration, (myHour + myDuration - (myHour + parseInt(myDuration))) * 60 + myMin));
   $("#eventModal").modal("show");
@@ -104,31 +155,32 @@ const eventHandler = (info) => {
   $(".row.field.public .content").text(info.event.extendedProps.public);
   $(".row.field.time .content").text(info.event.start.getHours() + ":" + info.event.start.getMinutes());
   $(".row.field.date .content").text(info.event.start.getFullYear() + "-" + (info.event.start.getMonth() + 1) + "-" + info.event.start.getDate());
-  $(".row.field.duration .content").text(info.event.extendedProps.duration + " (Hours)");
+  $(".row.field.duration .content").text(info.event.extendedProps.myDuration + " (Hours)");
   $(".row.field.location .content").text(info.event.extendedProps.location);
   $(".field.description .content").text(info.event.extendedProps.description);
 
-  $(".field.organizer div").text(info.event.extendedProps.organizer);
-  const admins = info.event.extendedProps.admins;
-  const guests = info.event.extendedProps.guests;
 
+  $(".field.organizer div").text(organizer);
+  
+  $("#adminUsersShow").empty();
   admins.forEach((admin) => {
     $(".field.admins div.listWrapper ul").append(`<li class="userWrpper">
-    <div class="adminStatus">status</div>
-    <div class="adminEmail">${admin}</div>
+    <div class="adminStatus">${admin.statusType}</div>
+    <div class="adminEmail">${admin.user.email}</div>
     <div class="adminChangeRole">role</div>
     <div class="adminRemove">X</div>
     </li>`);
   });
 
+  $("#guestUsersShow").empty();
   guests.forEach((guest) => {
     $(".field.guests div.listWrapper ul").append(`<li class="userWrpper">
-    <div class="guestStatus">status</div>
-    <div class="guestEmail">${guest}</div>
+    <div class="guestStatus">${guest.statusType}</div>
+    <div class="guestEmail">${guest.user.email}</div>
     <div class="guestChangeRole">role</div>
     <div class="guestRemove">X</div>
     </li>`);
   });
 };
 
-export { initFullCal };
+export { initFullCal, calendar };
