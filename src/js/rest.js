@@ -4,6 +4,7 @@ import axios from "axios";
 import $ from "jquery";
 
 var currentUserEvents = [];
+
 const login = (user) => {
   const loginFetchPromise = axios({
     method: "post",
@@ -24,26 +25,29 @@ const login = (user) => {
 
       sessionStorage.setItem("userId", res.data.data.userId);
       sessionStorage.setItem("token", res.data.data.token);
+      sessionStorage.setItem("currentUser", res.data.data.name);
+      $("header .me .name").text("Hi, " + res.data.data.name);
     })
     .catch((error) => {
       $(".modal-title").text("Log In failed");
       $(".modal-body").text(error.response.data.message);
     });
 
-  const loginGetName = axios({
-    method: "GET",
-    url: serverAddress + "/user",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    params: {
-      email: user.email,
-    },
-  });
-  loginGetName.then((res) => {
-    console.log(res.data.data.name);
-    sessionStorage.setItem("currentUser", res.data.data.name);
-  });
+  // const loginGetName = axios({
+  //   method: "GET",
+  //   url: serverAddress + "/user",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   params: {
+  //     email: user.email,
+  //   },
+  // });
+  // loginGetName.then((res) => {
+  //   console.log(res.data.data.name);
+  //   sessionStorage.setItem("currentUser", res.data.data.name);
+  //   $("header .me .name").text("Hi, " + res.data.data.name);
+  // });
 };
 
 const createUser = (user) => {
@@ -92,6 +96,8 @@ const loginGithub = (code) => {
 
       sessionStorage.setItem("userId", res.data.data.userId);
       sessionStorage.setItem("token", res.data.data.token);
+      sessionStorage.setItem("currentUser", res.data.data.name);
+      $("header .me .name").text("Hi, " + res.data.data.name);
     })
     .catch((error) => {
       $(".modal-title").text("Log In failed");
