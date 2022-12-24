@@ -4,6 +4,13 @@ import { createUser, login, loginGithub } from "../rest";
 const initRegistration = () => {
   console.log("init registration ");
   // -------------------- registration -------------------------------
+
+  $(document)
+    .off("click")
+    .on("click", "#btnSignup", function () {
+      // remove previous eventHandker
+    });
+
   $(document).on("click", "#btnSignup", (event) => {
     console.log("registration");
     event.preventDefault();
@@ -22,6 +29,13 @@ const initRegistration = () => {
 const initLogin = () => {
   console.log("init login");
   // -------------------- login -------------------------------
+
+  $(document)
+    .off("click")
+    .on("click", "#btnLogin", function () {
+      // remove previous eventHandker
+    });
+
   $(document).on("click", "#btnLogin", function (event) {
     console.log("login");
     event.preventDefault();
@@ -48,6 +62,7 @@ const initGithub = async () => {
   const location = window.location.href;
 
   if (location.includes("code")) {
+    location.replace("/?", "/");
     console.log(location);
     var url = new URL(location);
     const code = url.searchParams.get("code");

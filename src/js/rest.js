@@ -91,13 +91,17 @@ const loginGithub = (code) => {
     },
   })
     .then((res) => {
-      $(".modal-title").text("Log In success");
-      $(".modal-body").text("Log In with Github successfull!");
-
       sessionStorage.setItem("userId", res.data.data.userId);
       sessionStorage.setItem("token", res.data.data.token);
       sessionStorage.setItem("currentUser", res.data.data.name);
       $("header .me .name").text("Hi, " + res.data.data.name);
+
+      window.history.pushState({}, document.title, "/");
+      console.log("booom");
+
+      // $("#modalLogin").modal("show");
+      // $(".modal-title").text("Log In success");
+      // $(".modal-body").text("Log In with Github successfull!");
     })
     .catch((error) => {
       $(".modal-title").text("Log In failed");
