@@ -3,6 +3,7 @@ import { calendar } from "../js/calendar/fullCalendar";
 import axios from "axios";
 import $ from "jquery";
 
+var currentUserEvents = [];
 const login = (user) => {
   const loginFetchPromise = axios({
     method: "post",
@@ -94,9 +95,12 @@ const getAllEventsByUser = (userId) => {
     for (let i = 0; i < res.data.data.length; i++) {
       myNewEvents[i].start = myNewEvents[i].time;
       myNewEvents[i].myDuration = myNewEvents[i].duration;
-
+      for (let j = 0; j < myNewEvents[i].roles.length; j++) {
+        if (myNewEvents[i].roles[j].roleType == 'ORGANIZER' && myNewEvents[i].roles[j].user.id == sessionStorage.getItem("userId"))
+          currentUserEvents.push(myNewEvents[i]);
+      }
     }
-
+    console.log(currentUserEvents);
     //calendar.addEventSource(myNewEvents);///////////
   }).catch((error) => {
     console.log(error);
@@ -164,11 +168,11 @@ const saveNewEvent = (event, addGuests) => {
   FetchPromise.then(async (res) => {
     console.log(res.data.data);
     sessionStorage.setItem("currentEventId", res.data.data.id);
-    for (let i = 0; i < addGuests.length; i++){
+    for (let i = 0; i < addGuests.length; i++) {
       inviteGuest(addGuests[i]);
       await new Promise(r => setTimeout(r, 2000));
     }
-           
+
     // event.user.push(myGuest);
     location.reload();
   }).catch((error) => {

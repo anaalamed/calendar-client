@@ -36,6 +36,12 @@ const initFullCal = () => {
       nowIndicator: true,
       initialView: "timeGridWeek",
       views: {},
+      resources: [
+        {
+          id: sessionStorage.getItem("userId"),
+          
+        }
+      ],
       events: events,
       customButtons: {
         addEventButton: {
@@ -76,6 +82,13 @@ const initFullCal = () => {
       eventClick: (info) => eventHandler(info),
 
     });
+
+    
+
+
+
+
+
     calendarEl = $('#calendar');
     //getAllEventsByUser(sessionStorage.getItem("userId"))
     $(document).ready(function () {
@@ -89,30 +102,73 @@ const initFullCal = () => {
         },
         data: {},
       });
-
+      var myNewEvents;
       FetchPromise.then((res) => {
-        let myNewEvents = res.data.data;
+        myNewEvents = res.data.data;
 
 
         for (let i = 0; i < res.data.data.length; i++) {
-          
+
           myNewEvents[i].start = myNewEvents[i].time;
           myNewEvents[i].myDuration = myNewEvents[i].duration;
           var myHour = new Date(myNewEvents[i].time).getHours();
           var myMin = new Date(myNewEvents[i].time).getMinutes();
           var myDuration2 = myNewEvents[i].duration;
-          var calEnd = new Date (myNewEvents[i].time).setHours(myHour + myDuration2, (myHour + myDuration2 - (myHour + parseInt(myDuration2))) * 60 + myMin);
-        
+          var calEnd = new Date(myNewEvents[i].time).setHours(myHour + myDuration2, (myHour + myDuration2 - (myHour + parseInt(myDuration2))) * 60 + myMin);
+
           myNewEvents[i].end = calEnd;
+          myNewEvents[i].resourceId = sessionStorage.getItem("userId");
+        
+          if (myNewEvents[i].resourceId == sessionStorage.getItem("userId") ) {
+            $(".fc-event").css('background-color', '#D7CDD5').addClass(sessionStorage.getItem("userId"));
+            
+          }
+        
         }
+        // var resource = [{id: sessionStorage.getItem("userId")}];
+        // myNewEvents.source=resource;
         console.log(myNewEvents);
         calendar.addEventSource(myNewEvents);///////////
         
+        //ADDED class equals to orginaizerid
+        for (let i = 0; i < res.data.data.length; i++) {
+          if (myNewEvents[i].resourceId == sessionStorage.getItem("userId") ) {
+            $(".fc-event").css('background-color', '#D7CDD5').addClass(sessionStorage.getItem("userId"));
+            console.log(myNewEvents[i].resourceId);
+          }
+        }
+
+
+
+
+
       }).catch((error) => {
         console.log(error);
       });
 
     });
+   
+
+    // Create Checkboxes
+    var checkboxContainer = $(`<div class='checkboxContainer'><label for='normal' style="margin-right: 10%;">${sessionStorage.getItem("currentUser")}</label><input type='checkbox' id=${sessionStorage.getItem("userId")} checked></br>`);
+
+    // Append it to FullCalendar.
+    $(".calendar").after(checkboxContainer);
+
+    // Click handler
+    $(`#${sessionStorage.getItem("userId")}`).on("click", function () {
+      if ($(this).is(":checked")) {
+        console.log("11111");
+        //$('#calendar').find(".fc-event").show();
+        $('#calendar').find("."+$(this).attr("id")).show();
+      } else {
+        console.log("00000");
+        $('#calendar').find("."+$(this).attr("id")).hide();
+        
+      }
+    });
+
+
 
 
 
@@ -129,19 +185,19 @@ const initFullCal = () => {
 
 const eventHandler = (info) => {
 
- 
+
   var theRoles = info.event.extendedProps.roles
   var organizer;
   var admins = [];
   var guests = [];
-  sessionStorage.setItem("currentEventId",info.event.id);
+  sessionStorage.setItem("currentEventId", info.event.id);
 
   for (let i = 0; i < theRoles.length; i++) {
     if (theRoles[i].roleType == 'ORGANIZER')
       organizer = theRoles[i].user.email;
     else if (theRoles[i].roleType == 'ADMIN')
       admins.push(theRoles[i]);
-    else 
+    else
       guests.push(theRoles[i]);
   }
   console.log(theRoles);
@@ -161,7 +217,7 @@ const eventHandler = (info) => {
 
 
   $(".field.organizer div").text(organizer);
-  
+
   $("#adminUsersShow").empty();
   admins.forEach((admin) => {
     $(".field.admins div.listWrapper ul").append(`<li class="userWrpper">
