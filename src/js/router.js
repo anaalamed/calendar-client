@@ -33,6 +33,7 @@ const urlRoutes = {
     description: "This is the home page",
     init: () => {
       initHomePage();
+      initGithub();
     },
   },
   "/signup": {
@@ -52,8 +53,8 @@ const urlRoutes = {
       initLogin();
     },
   },
-   //"/calendar": {
-  "/": {
+  "/calendar": {
+    // "/": {
     // debug for calendar
     template: "pages/calendar.html",
     title: "My Calendar | " + urlPageTitle,

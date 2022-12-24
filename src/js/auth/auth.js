@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { createUser, login } from "../rest";
+import { createUser, login, loginGithub } from "../rest";
 
 const initRegistration = () => {
   console.log("init registration ");
@@ -18,8 +18,6 @@ const initRegistration = () => {
     createUser(user);
   });
 };
-
-
 
 const initLogin = () => {
   console.log("init login");
@@ -44,10 +42,20 @@ const initLogin = () => {
   });
 };
 
-
-
 const initGithub = async () => {
   console.log("initGithub");
+
+  const location = window.location.href;
+
+  if (location.includes("code")) {
+    console.log(location);
+    var url = new URL(location);
+    const code = url.searchParams.get("code");
+    console.log(code);
+
+    loginGithub(code);
+  }
+
   // take a code from url and ro req to auth/loginGithub?code=...
 };
 
