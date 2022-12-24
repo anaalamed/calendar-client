@@ -5,6 +5,7 @@ import $ from "jquery";
 
 var currentUserEvents = [];
 
+// ------------------------ auth ----------------------------------
 const login = (user) => {
   const loginFetchPromise = axios({
     method: "post",
@@ -110,6 +111,37 @@ const loginGithub = (code) => {
   loginGithubFetchPromise();
 };
 
+// ------------------------ events ----------------------------------
+// origin
+// const getAllEventsByUser = (userId) => {
+//   const FetchPromise = axios({
+//     method: "GET",
+//     url: serverAddress + "/event/getEventsByUserId",
+//     headers: {
+//       "Content-Type": "application/json",
+//       token: sessionStorage.getItem("token"),
+//     },
+//     data: {},
+//   });
+
+//   FetchPromise.then((res) => {
+//     console.log(res.data.data);
+//     let myNewEvents = res.data.data;
+//     for (let i = 0; i < res.data.data.length; i++) {
+//       myNewEvents[i].start = myNewEvents[i].time;
+//       myNewEvents[i].myDuration = myNewEvents[i].duration;
+//       for (let j = 0; j < myNewEvents[i].roles.length; j++) {
+//         if (myNewEvents[i].roles[j].roleType == "ORGANIZER" && myNewEvents[i].roles[j].user.id == sessionStorage.getItem("userId")) currentUserEvents.push(myNewEvents[i]);
+//       }
+//     }
+//     console.log(currentUserEvents);
+//     //calendar.addEventSource(myNewEvents);///////////
+//   }).catch((error) => {
+//     console.log(error);
+//   });
+// };
+
+// from fullcalendar
 const getAllEventsByUser = (userId) => {
   const FetchPromise = axios({
     method: "GET",
@@ -120,19 +152,37 @@ const getAllEventsByUser = (userId) => {
     },
     data: {},
   });
-
+  var myNewEvents;
   FetchPromise.then((res) => {
-    console.log(res.data.data);
-    let myNewEvents = res.data.data;
+    myNewEvents = res.data.data;
+
     for (let i = 0; i < res.data.data.length; i++) {
       myNewEvents[i].start = myNewEvents[i].time;
       myNewEvents[i].myDuration = myNewEvents[i].duration;
-      for (let j = 0; j < myNewEvents[i].roles.length; j++) {
-        if (myNewEvents[i].roles[j].roleType == "ORGANIZER" && myNewEvents[i].roles[j].user.id == sessionStorage.getItem("userId")) currentUserEvents.push(myNewEvents[i]);
+      var myHour = new Date(myNewEvents[i].time).getHours();
+      var myMin = new Date(myNewEvents[i].time).getMinutes();
+      var myDuration2 = myNewEvents[i].duration;
+      var calEnd = new Date(myNewEvents[i].time).setHours(myHour + myDuration2, (myHour + myDuration2 - (myHour + parseInt(myDuration2))) * 60 + myMin);
+
+      myNewEvents[i].end = calEnd;
+      myNewEvents[i].resourceId = sessionStorage.getItem("userId");
+
+      if (myNewEvents[i].resourceId == sessionStorage.getItem("userId")) {
+        $(".fc-event").css("background-color", "#D7CDD5").addClass(sessionStorage.getItem("userId"));
       }
     }
-    console.log(currentUserEvents);
-    //calendar.addEventSource(myNewEvents);///////////
+    // var resource = [{id: sessionStorage.getItem("userId")}];
+    // myNewEvents.source=resource;
+    console.log("myNewEvents: " + myNewEvents);
+    calendar.addEventSource(myNewEvents); ///////////
+
+    //ADDED class equals to orginaizerid
+    for (let i = 0; i < res.data.data.length; i++) {
+      if (myNewEvents[i].resourceId == sessionStorage.getItem("userId")) {
+        $(".fc-event").css("background-color", "#D7CDD5").addClass(sessionStorage.getItem("userId"));
+        console.log(myNewEvents[i].resourceId);
+      }
+    }
   }).catch((error) => {
     console.log(error);
   });
@@ -205,7 +255,7 @@ const saveNewEvent = (event, addGuests) => {
     }
 
     // event.user.push(myGuest);
-    location.reload();
+    // location.reload();
   }).catch((error) => {
     console.log(error.response.data.message);
   });

@@ -3,6 +3,7 @@ import { initSideCalendar } from "./calendar/sideCalendar";
 import { initFullCal } from "./calendar/fullCalendar";
 import { initHomePage } from "./home/home";
 import { initCalendar } from "./calendar/calendar";
+import { initShare } from "./calendar/share";
 
 const initRouter = async () => {
   await urlLocationHandler();
@@ -60,6 +61,7 @@ const urlRoutes = {
       initSideCalendar();
       initFullCal();
       initCalendar();
+      initShare();
     },
   },
   "/github": {
