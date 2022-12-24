@@ -1,3 +1,4 @@
+import { data } from "jquery";
 import { getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest } from "../rest";
 import { calendar } from "./fullCalendar";
 import pubSub from "./pubsub";
@@ -61,8 +62,27 @@ const eventClickHandler = (info) => {
 
   $("#guestUsersShow").empty();
   guests.forEach((guest) => {
+    console.log(guest.statusType);
+    let status = "";
+    let guestClass = "";
+    switch (guest.statusType) {
+      case "TENTATIVE":
+        status = "?";
+        guestClass = "tentative";
+        break;
+      case "APPROVED":
+        status = "V";
+        guestClass = "approved";
+        break;
+      case "REJECTED":
+        status = "X";
+        guestClass = "rejected";
+        break;
+      default:
+      // code block
+    }
     $(".field.guests div.listWrapper ul").append(`<li class="userWrpper">
-    <div class="guestStatus">${guest.statusType}</div>
+    <div class="guestStatus ${guestClass}">${status}</div>
     <div class="guestEmail">${guest.user.email}</div>
     <div class="guestChangeRole">role</div>
     <div class="guestRemove">X</div>
@@ -86,20 +106,6 @@ const initCalendar = () => {
     console.log("Inside add new event!");
     event.preventDefault();
 
-    // add to fullCalendar
-    calendar.addEvent({
-      title: $("#editModalTitle").val(),
-      start: $("#date").val() + "T" + $("#time").val(),
-      end: "2022-12-19T20:00:00",
-      extendedProps: {
-        public: $("#checkbox").is(":checked"),
-        location: $("#location").val(),
-        organizer: sessionStorage.getItem("currentUser"),
-        duration: $("#duration").val(),
-      },
-      description: $("#description").val(),
-    });
-
     // add to server
     const eventToAdd = {
       title: $(".title").val(),
@@ -114,6 +120,22 @@ const initCalendar = () => {
 
     saveNewEvent(eventToAdd, addGuests);
   });
+
+  // edit event - not implenented !!!
+  $(document).on("click", "#editEventButton", (event) => {
+    console.log("Inside edit event!");
+    event.preventDefault();
+
+    $("#eventEditModal").modal("show");
+    cleanAddModalFields();
+
+    // not implenented !!!
+    // - get the event data - place in the right fields
+    // - save updated
+    // close 2 modals
+  });
+
+  editEventButton;
 
   // add guest
   $(document).on("click", "#eventAddGuest", (event) => {

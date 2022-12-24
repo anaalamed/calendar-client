@@ -5,6 +5,12 @@
     h4 {
         font-size: 19px;
     }
+
+    .modal-header-buttons {
+        i {
+            color: #fff;
+        }
+    }
     
     .modal-body {
         .container-fluid {
@@ -53,13 +59,19 @@
 
                             li.userWrpper {
                                 display: flex;
+                                align-items: center;
 
                                 div {
-                                    padding: 0 5px;
+                                    padding: 5px;
+                    
                                 }
 
-                                .adminStatus, .questStatus {
-                                    border: 1px solid green;
+                                .adminStatus, .guestStatus {
+                                    border-radius: 50%;
+                                    height: 20px;
+                                    line-height: 10px;
+                                    text-align: center;
+                                    background-color: rgb(196, 194, 194);
                                 }
 
                                 .adminChangeRole, .guestChangeRole {
@@ -68,6 +80,13 @@
 
                                 .adminRemove,  .guestRemove {
                                     border:  1px solid red;
+                                }
+
+                                div.approved {
+                                    color: green;
+                                }
+                                div.rejected {
+                                    color: red;
                                 }
 
                                 

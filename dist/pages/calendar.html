@@ -33,9 +33,12 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLongTitle">Event title</h5>
-          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <div class="modal-header-buttons">
+            <i id="editEventButton" class="bi bi-pencil"></i>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
         </div>
 
         <div class="modal-body">
@@ -79,10 +82,10 @@
 
               <div class="guests field">
                 <h4>Guests:</h4>
-                <div class="row addGuest">
+                <!-- <div class="row addGuest">
                   <input class="col-md-9 add bg" />
-                  <div class="col-md-2 addButton bg">+</div>
-                </div>
+                  <div id="eventAddGuest" class="col-md-2 addButton bg">+</div>
+                </div> -->
 
                 <div class="listWrapper content bg">
                   <ul id="guestUsersShow"></ul>

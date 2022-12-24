@@ -254,6 +254,20 @@ const saveNewEvent = (event, addGuests) => {
       await new Promise((r) => setTimeout(r, 2000));
     }
 
+    // add to fullCalendar
+    calendar.addEvent({
+      title: $("#editModalTitle").val(),
+      start: $("#date").val() + "T" + $("#time").val(),
+      end: "2022-12-19T20:00:00",
+      extendedProps: {
+        public: $("#checkbox").is(":checked"),
+        location: $("#location").val(),
+        organizer: sessionStorage.getItem("currentUser"),
+        duration: $("#duration").val(),
+      },
+      description: $("#description").val(),
+    });
+
     // event.user.push(myGuest);
     // location.reload();
   }).catch((error) => {
