@@ -40,53 +40,66 @@ body {
 
   header {
     height: 10vh;
-    // padding: 1rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
     nav.navbar.navbar-expand-lg {
       color: #8254ff;
-      //background: rgb(255, 255, 255);
-    }
 
-    nav {
-      .menuItems {
-        list-style: none;
-        display: flex;
-    
-        li {
-          margin: 10px;
-    
-          a {
-            text-decoration: none;
-            color: #ffffff;
-            font-size: 24px;
-            font-weight: 400;
-            transition: all 1s ease-in-out;
-            position: relative;
-            text-transform: uppercase;
-    
-            &::before {
-              content: attr(data-item);
-              transition: 1s;
-              color: #8254ff;
-              position: absolute;
-              top: 1;
-              bottom: 1;
-              left: 1;
-              right: 1;
-              width: 0;
-              overflow: hidden;
-            }
-    
-            &:hover {
+      nav {
+        .menuItems {
+          list-style: none;
+          display: flex;
+      
+          li {
+            margin: 10px;
+      
+            a {
+              text-decoration: none;
+              color: #ffffff;
+              font-size: 24px;
+              font-weight: 400;
+              transition: all 1s ease-in-out;
+              position: relative;
+              text-transform: uppercase;
+      
               &::before {
-                width: 100%;
-                transition: all 0.5s ease-in-out;
+                content: attr(data-item);
+                transition: 1s;
+                color: #8254ff;
+                position: absolute;
+                top: 1;
+                bottom: 1;
+                left: 1;
+                right: 1;
+                width: 0;
+                overflow: hidden;
+              }
+      
+              &:hover {
+                &::before {
+                  width: 100%;
+                  transition: all 0.5s ease-in-out;
+                }
               }
             }
           }
         }
       }
     }
+
+    .me {
+      padding: 0 1rem;
+      color: #fff;
+      font-size: 20px;
+
+      i, .name {
+        color: #fff;
+      }
+    }
+
+
 
   }
 
