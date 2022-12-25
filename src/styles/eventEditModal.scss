@@ -5,7 +5,8 @@
         margin: 0 auto;
     }
 
-    input, textarea {
+    input,
+    textarea {
         margin-bottom: 8px;
         border-radius: 10px;
         height: 35px;
@@ -16,6 +17,80 @@
         border-radius: 10px;
     }
 
+    //admin edit view
+
+    div.admin .title {
+        pointer-events: none;
+        background-color: #dddddd;
+    }
+
+    div.admin #time {
+        pointer-events: none;
+        background-color: #dddddd;
+    }
+
+    div.admin #date {
+        pointer-events: none;
+        background-color: #dddddd;
+    }
+
+    div.admin #duration {
+        pointer-events: none;
+        background-color: #dddddd;
+    }
+
+    div.admin .bi {
+        display: none;
+    }
+
+    //guest edit view
 
 
+
+    div.guest .addGuest {
+        display: none;
+    }
+
+    div.guest .title {
+        pointer-events: none;
+        background-color: #dddddd;
+    }
+
+    div.guest #time {
+        pointer-events: none;
+        background-color: #dddddd;
+    }
+
+    div.guest #date {
+        pointer-events: none;
+        background-color: #dddddd;
+    }
+
+    div.guest #duration {
+        pointer-events: none;
+        background-color: #dddddd;
+    }
+
+    div.guest #location {
+        pointer-events: none;
+        background-color: #dddddd;
+    }
+
+    div.guest #description {
+        pointer-events: none;
+        background-color: #dddddd;
+    }
+
+    div.guest #checkbox {
+        pointer-events: none;
+        background: #dddddd;
+    }
+
+    div.guest .bi {
+        display: none;
+    }
+
+    div.guest #SaveNewEventBtn{
+        display: none;
+    }
 }
