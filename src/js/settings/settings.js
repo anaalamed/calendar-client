@@ -4,13 +4,13 @@ import { updateCity, updateNotificationsSettings } from "../rest";
 const initSettings = () => {
   console.log("initSettings");
 
-  //   $(document)
-  //     .off("click")
-  //     .on("click", "#updateCity", function () {
-  //       // remove previous eventHandler
-  //     });
+  $(document)
+    .off("click")
+    .on("click", "#updateCity, #updateNotSetBtn", function () {
+      // remove previous eventHandler
+    });
 
-  $(document).on("click", "#updateCity", (event) => {
+  $(document).on("click", "#updateCity", function (event) {
     event.preventDefault();
     console.log("update city");
 
@@ -18,12 +18,6 @@ const initSettings = () => {
     console.log(city);
     updateCity(city);
   });
-
-  //   $(document)
-  //     .off("click")
-  //     .on("click", "#updateNotSetBtn", function () {
-  //       // remove previous eventHandler
-  //     });
 
   $(document).on("click", "#updateNotSetBtn", function (event) {
     console.log("updateNotSet");
