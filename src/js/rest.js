@@ -28,28 +28,14 @@ const login = (user) => {
       sessionStorage.setItem("userId", res.data.data.userId);
       sessionStorage.setItem("token", res.data.data.token);
       sessionStorage.setItem("currentUser", res.data.data.name);
-      $("header .me .name").text("Hi, " + res.data.data.name);
+      sessionStorage.setItem("city", res.data.data.city);
+      $("header .me .name").text("Hi, " + sessionStorage.currentUser);
+      $("header .city").text(sessionStorage.city);
     })
     .catch((error) => {
       $(".modal-title").text("Log In failed");
       $(".modal-body").text(error.response.data.message);
     });
-
-  // const loginGetName = axios({
-  //   method: "GET",
-  //   url: serverAddress + "/user",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   params: {
-  //     email: user.email,
-  //   },
-  // });
-  // loginGetName.then((res) => {
-  //   console.log(res.data.data.name);
-  //   sessionStorage.setItem("currentUser", res.data.data.name);
-  //   $("header .me .name").text("Hi, " + res.data.data.name);
-  // });
 };
 
 const createUser = (user) => {
@@ -101,7 +87,7 @@ const loginGithub = (code) => {
       window.history.pushState({}, document.title, "/");
       console.log("booom");
 
-      // $("#modalLogin").modal("show");
+      // $("#modalResponse").modal("show");
       // $(".modal-title").text("Log In success");
       // $(".modal-body").text("Log In with Github successfull!");
     })
@@ -110,6 +96,62 @@ const loginGithub = (code) => {
       $(".modal-body").text("Log In with Github failed");
     });
   loginGithubFetchPromise();
+};
+
+// ------------------------ settings ----------------------------------
+// get notification settings - not implemented!
+const updateCity = (city) => {
+  const updateLocation = axios({
+    method: "PATCH",
+    url: serverAddress + "/user/updateCity",
+    headers: {
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
+    },
+    params: {
+      newCity: city,
+    },
+  })
+    .then((res) => {
+      const city = res.data.data.city;
+      sessionStorage.setItem("city", city);
+      $("header .city").text(city);
+
+      $("#modalResponse .modal-title").text("City update");
+      $("#modalResponse .modal-body").text("City was updated successfull!");
+      // $("#modalResponse").modal("show");
+    })
+    .catch((error) => {
+      $(".modal-title").text("City update");
+      $(".modal-body").text("City update failed!");
+    });
+  // updateLocation();
+};
+
+const updateNotificationsSettings = (settings) => {
+  console.log("updateNotificationsSettings");
+  const updateNotifications = axios({
+    method: "PUT",
+    url: serverAddress + "/user/update",
+    headers: {
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
+    },
+    params: {
+      notifications: "",
+    },
+    data: settings,
+  })
+    .then((res) => {
+      $("#modalResponse .modal-title").text("Notification Settings update");
+      $("#modalResponse .modal-body").text("Notification Settings were update");
+      // $("#modalResponse").modal("show");
+    })
+    .catch((error) => {
+      $(".modal-title").text("Notification Settings update");
+      $(".modal-body").text("Notification Settings update failed!!!");
+    });
+  // updateNotifications();
 };
 
 // ------------------------ events ----------------------------------
@@ -142,7 +184,8 @@ const loginGithub = (code) => {
 //   });
 // };
 
-// from fullcalendar
+// delete event - not implemented
+// cancel event for me  - not implemented
 const getAllEventsByUser = (userId) => {
   const FetchPromise = axios({
     method: "GET",
@@ -186,46 +229,6 @@ const getAllEventsByUser = (userId) => {
     }
   }).catch((error) => {
     console.log(error);
-  });
-};
-
-const inviteGuest = (email) => {
-  const FetchPromise = axios({
-    method: "POST",
-    url: serverAddress + "/event/inviteGuest?eventId=" + sessionStorage.getItem("currentEventId") + "&email=" + email, // Will need to change to eventId later!!!!~~~~~~
-    headers: {
-      "Content-Type": "application/json",
-      token: sessionStorage.getItem("token"),
-    },
-    data: {},
-  });
-
-  FetchPromise.then((res) => {
-    const user = res.data.data;
-    console.log(user);
-    $(".field.guests div.listWrapper ul").append(renderUserinList(user));
-    return user;
-  }).catch((error) => {
-    console.log(error.response.data.message);
-  });
-};
-
-const removeGuest = (email) => {
-  const FetchPromise = axios({
-    method: "DELETE",
-    url: serverAddress + "/event/removeGuest?eventId=" + sessionStorage.getItem("currentEventId") + "&email=" + email,
-    headers: {
-      "Content-Type": "application/json",
-      token: sessionStorage.getItem("token"),
-    },
-    data: {},
-  });
-
-  FetchPromise.then((res) => {
-    console.log(res.data.data);
-    return true;
-  }).catch((error) => {
-    console.log(error.response.data.message);
   });
 };
 
@@ -279,9 +282,7 @@ const saveNewEvent = (event, addGuests) => {
   });
 };
 
-
 const updateEvent = (event, addGuests) => {
-  
   const FetchPromise = axios({
     method: "PUT",
     url: serverAddress + "/event/updateEvent/event",
@@ -289,8 +290,8 @@ const updateEvent = (event, addGuests) => {
       "Content-Type": "application/json",
       token: sessionStorage.getItem("token"),
     },
-    params:{
-      eventId : sessionStorage.getItem("currentEventId")
+    params: {
+      eventId: sessionStorage.getItem("currentEventId"),
     },
     data: {
       title: event.title,
@@ -328,20 +329,53 @@ const updateEvent = (event, addGuests) => {
     // });
 
     // event.user.push(myGuest);
-     location.reload();
+    location.reload();
   }).catch((error) => {
     console.log(error.response.data.message);
   });
-
-
 };
 
+// ------------------------ roles ----------------------------------
+// switch role - not implemented!
 
+const inviteGuest = (email) => {
+  const FetchPromise = axios({
+    method: "POST",
+    url: serverAddress + "/event/inviteGuest?eventId=" + sessionStorage.getItem("currentEventId") + "&email=" + email, // Will need to change to eventId later!!!!~~~~~~
+    headers: {
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
+    },
+    data: {},
+  });
 
+  FetchPromise.then((res) => {
+    const user = res.data.data;
+    console.log(user);
+    $(".field.guests div.listWrapper ul").append(renderUserinList(user));
+    return user;
+  }).catch((error) => {
+    console.log(error.response.data.message);
+  });
+};
 
+const removeGuest = (email) => {
+  const FetchPromise = axios({
+    method: "DELETE",
+    url: serverAddress + "/event/removeGuest?eventId=" + sessionStorage.getItem("currentEventId") + "&email=" + email,
+    headers: {
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
+    },
+    data: {},
+  });
 
+  FetchPromise.then((res) => {
+    console.log(res.data.data);
+    return true;
+  }).catch((error) => {
+    console.log(error.response.data.message);
+  });
+};
 
-
-
-
-export { updateEvent,createUser, login, loginGithub, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest };
+export { updateEvent, createUser, login, loginGithub, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest, updateCity, updateNotificationsSettings };

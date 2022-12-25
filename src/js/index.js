@@ -8,6 +8,13 @@ import "../styles/_custom.scss";
 $(() => {
   initRouter();
   openConnection();
+
+  $(document).ready(function () {
+    if (sessionStorage.length > 0) {
+      $("header .me .name").text("Hi, " + sessionStorage.currentUser);
+      $("header .city").text(sessionStorage.city);
+    }
+  });
 });
 
 // // insert dynamic html at different html files
