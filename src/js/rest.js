@@ -1,5 +1,6 @@
 import { serverAddress } from "./constants";
 import { calendar } from "../js/calendar/fullCalendar";
+import { renderUserinList } from "../js/calendar/calendar";
 import axios from "axios";
 import $ from "jquery";
 
@@ -200,8 +201,10 @@ const inviteGuest = (email) => {
   });
 
   FetchPromise.then((res) => {
-    console.log(res.data.data);
-    return res.data.data;
+    const user = res.data.data;
+    console.log(user);
+    $(".field.guests div.listWrapper ul").append(renderUserinList(user));
+    return user;
   }).catch((error) => {
     console.log(error.response.data.message);
   });
@@ -210,7 +213,7 @@ const inviteGuest = (email) => {
 const removeGuest = (email) => {
   const FetchPromise = axios({
     method: "DELETE",
-    url: serverAddress + "/event/removeGuest?eventId=" + sessionStorage.getItem("currentEventId") + "&email=" + "leon@organizer.com", // Will need to change to eventId & email later!!!!~~~~~~
+    url: serverAddress + "/event/removeGuest?eventId=" + sessionStorage.getItem("currentEventId") + "&email=" + email,
     headers: {
       "Content-Type": "application/json",
       token: sessionStorage.getItem("token"),
@@ -220,6 +223,7 @@ const removeGuest = (email) => {
 
   FetchPromise.then((res) => {
     console.log(res.data.data);
+    return true;
   }).catch((error) => {
     console.log(error.response.data.message);
   });

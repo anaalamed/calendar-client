@@ -5,20 +5,6 @@ import pubSub from "./pubsub";
 
 var addGuests = [];
 
-const cleanAddModalFields = () => {
-  $("#eventEditModal").modal("show"); // modal debug
-  $("#organizerField").text(sessionStorage.getItem("currentUser"));
-  $("#adminUsers").empty();
-  $("#guestUsers").empty();
-  $("#editModalTitle").val("");
-  $("#date").val("");
-  $("#time").val("");
-  $("#checkbox").val("");
-  $("#location").val("");
-  $("#duration").val("");
-  $("#description").val("");
-};
-
 // click on the event
 const eventClickHandler = (info) => {
   console.log(info);
@@ -52,41 +38,14 @@ const eventClickHandler = (info) => {
 
   $("#adminUsersShow").empty();
   admins.forEach((admin) => {
-    $(".field.admins div.listWrapper ul").append(`<li class="userWrpper">
-    <div class="adminStatus">${admin.statusType}</div>
-    <div class="adminEmail">${admin.user.email}</div>
-    <div class="adminChangeRole">role</div>
-    <div class="adminRemove">X</div>
-    </li>`);
+    console.log(admin);
+    $(".field.admins div.listWrapper ul").append(renderUserinList(admin));
   });
 
   $("#guestUsersShow").empty();
   guests.forEach((guest) => {
-    console.log(guest.statusType);
-    let status = "";
-    let guestClass = "";
-    switch (guest.statusType) {
-      case "TENTATIVE":
-        status = "?";
-        guestClass = "tentative";
-        break;
-      case "APPROVED":
-        status = "V";
-        guestClass = "approved";
-        break;
-      case "REJECTED":
-        status = "X";
-        guestClass = "rejected";
-        break;
-      default:
-      // code block
-    }
-    $(".field.guests div.listWrapper ul").append(`<li class="userWrpper">
-    <div class="guestStatus ${guestClass}">${status}</div>
-    <div class="guestEmail">${guest.user.email}</div>
-    <div class="guestChangeRole">role</div>
-    <div class="guestRemove">X</div>
-    </li>`);
+    console.log(guest);
+    $(".field.guests div.listWrapper ul").append(renderUserinList(guest));
   });
 };
 
@@ -98,6 +57,16 @@ const initCalendar = () => {
     // change date from side calendar
     pubSub.subscribe("anEvent", (date) => {
       calendar.gotoDate(date);
+    });
+
+    // remove guest
+    $(document).on("click", ".guestRemove", function (event) {
+      console.log("Inside Remove Guest From Event!");
+      event.preventDefault();
+
+      const email = $(this).siblings(".guestEmail").text();
+      console.log("userId token", sessionStorage.getItem("userId"));
+      console.log("delete res: " + removeGuest(email));
     });
   });
 
@@ -135,40 +104,68 @@ const initCalendar = () => {
     // close 2 modals
   });
 
-  editEventButton;
-
-  // add guest
+  // add guest - (event modal)
   $(document).on("click", "#eventAddGuest", (event) => {
     console.log("Inside add guest to event (event modal)");
     event.preventDefault();
-    const email = $(".row.addGuest input");
-    addGuests.push(email.val());
-    console.log($(".row.addGuest input").val());
-    $(".field.guests .listWrapper ul").append(`<li class="userWrpper">
-      <div class="guestStatus">status</div>
-      <div class="guestEmail">${email.val()}</div>
-      <div class="guestChangeRole">role</div>
-      <div class="guestRemove">X</div>
-    </li>`);
+    const email = $(".row.addGuest input").val();
+    console.log(email);
+    // addGuests.push(email);
+    inviteGuest(email);
 
-    //inviteGuest(email.val());
+    // $(".field.guests div.listWrapper ul").append(renderUserinList(guest));
 
-    email.val("");
-  });
-
-  // remove guest
-  $(document).on("click", ".guestRemove", (event) => {
-    console.log("Inside Remove Guest From Event!");
-    event.preventDefault();
-
-    const email = $("#guestEmail").val();
-
-    console.log(sessionStorage.getItem("userId"));
-    removeGuest(email);
+    $(".row.addGuest input").val("");
   });
 
   // request is not implemented for:
   // - change role,
 };
 
-export { initCalendar, cleanAddModalFields, eventClickHandler };
+// ------------------------- utils functions ------------------------------
+const cleanAddModalFields = () => {
+  $("#eventEditModal").modal("show"); // modal debug
+  $("#organizerField").text(sessionStorage.getItem("currentUser"));
+  $("#adminUsers").empty();
+  $("#guestUsers").empty();
+  $("#editModalTitle").val("");
+  $("#date").val("");
+  $("#time").val("");
+  $("#checkbox").val("");
+  $("#location").val("");
+  $("#duration").val("");
+  $("#description").val("");
+};
+
+const renderUserinList = (user) => {
+  console.log(user);
+  let status = "";
+  let statusClass = "";
+  switch (user.statusType) {
+    case "TENTATIVE":
+      status = "?";
+      statusClass = "tentative";
+      break;
+    case "APPROVED":
+      status = "V";
+      statusClass = "approved";
+      break;
+    case "REJECTED":
+      status = "X";
+      statusClass = "rejected";
+      break;
+    default:
+    // code block
+  }
+
+  const userType = user.roleType.toLowerCase();
+  const email = user.user.email;
+  return `<li class="userWrpper">
+  <div class="${userType}Status ${statusClass}">${status}</div>
+  <div class="${userType}Email">${email}</div>
+  <div class="${userType}ChangeRole"><i class="bi bi-arrow-down-up"></i></div>
+  <div class="${userType}Remove"><i class="bi bi-trash"></i></div>
+  </li>`;
+};
+
+export { initCalendar, cleanAddModalFields, eventClickHandler, renderUserinList };
