@@ -273,10 +273,75 @@ const saveNewEvent = (event, addGuests) => {
     });
 
     // event.user.push(myGuest);
-    // location.reload();
+    location.reload();
   }).catch((error) => {
     console.log(error.response.data.message);
   });
 };
 
-export { createUser, login, loginGithub, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest };
+
+const updateEvent = (event, addGuests) => {
+  
+  const FetchPromise = axios({
+    method: "PUT",
+    url: serverAddress + "/event/updateEvent/event",
+    headers: {
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
+    },
+    params:{
+      eventId : sessionStorage.getItem("currentEventId")
+    },
+    data: {
+      title: event.title,
+      // time: event.time,
+      // date: event.date,
+      duration: event.myDuration,
+      location: event.location,
+      description: event.description,
+      attachments: event.attachments,
+      public: event.public,
+      user: [],
+    },
+  });
+
+  FetchPromise.then(async (res) => {
+    console.log(res.data.data);
+    sessionStorage.setItem("currentEventId", res.data.data.id);
+    for (let i = 0; i < addGuests.length; i++) {
+      inviteGuest(addGuests[i]);
+      await new Promise((r) => setTimeout(r, 2000));
+    }
+
+    // add to fullCalendar
+    // calendar.addEvent({
+    //   title: $("#editModalTitle").val(),
+    //   start: $("#date").val() + "T" + $("#time").val(),
+    //   end: "2022-12-19T20:00:00",
+    //   extendedProps: {
+    //     public: $("#checkbox").is(":checked"),
+    //     location: $("#location").val(),
+    //     organizer: sessionStorage.getItem("currentUser"),
+    //     duration: $("#duration").val(),
+    //   },
+    //   description: $("#description").val(),
+    // });
+
+    // event.user.push(myGuest);
+     location.reload();
+  }).catch((error) => {
+    console.log(error.response.data.message);
+  });
+
+
+};
+
+
+
+
+
+
+
+
+
+export { updateEvent,createUser, login, loginGithub, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest };

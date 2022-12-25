@@ -1,30 +1,37 @@
 import { data } from "jquery";
-import { getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest } from "../rest";
+import { updateEvent,getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest } from "../rest";
 import { calendar } from "./fullCalendar";
 import pubSub from "./pubsub";
 
 var addGuests = [];
+var currentEventInfo;
+var organizer;
+var admins = [];
+var guests = [];
+
 
 // click on the event
 const eventClickHandler = (info) => {
+
+  admins = [];
+  guests = [];
+
   console.log(info);
+  currentEventInfo = info;
   var theRoles = info.event.extendedProps.roles;
-  var organizer;
-  var admins = [];
-  var guests = [];
+
   sessionStorage.setItem("currentEventId", info.event.id);
 
   for (let i = 0; i < theRoles.length; i++) {
-    if (theRoles[i].roleType == "ORGANIZER") organizer = theRoles[i].user.email;
+    if (theRoles[i].roleType == "ORGANIZER") organizer = theRoles[i].user;
     else if (theRoles[i].roleType == "ADMIN") admins.push(theRoles[i]);
     else guests.push(theRoles[i]);
   }
-  console.log(theRoles);
+  
   console.log(organizer);
   console.log(admins);
   console.log(guests);
 
-  //info.event.setEnd(info.event.start.setHours(myHour + myDuration, (myHour + myDuration - (myHour + parseInt(myDuration))) * 60 + myMin));
   $("#eventModal").modal("show");
   $(".modal-title").text(info.event._def.title);
   $(".row.field.public .content").text(info.event.extendedProps.public);
@@ -34,7 +41,7 @@ const eventClickHandler = (info) => {
   $(".row.field.location .content").text(info.event.extendedProps.location);
   $(".field.description .content").text(info.event.extendedProps.description);
 
-  $(".field.organizer div").text(organizer);
+  $(".field.organizer div").text(organizer.email);
 
   $("#adminUsersShow").empty();
   admins.forEach((admin) => {
@@ -47,6 +54,9 @@ const eventClickHandler = (info) => {
     console.log(guest);
     $(".field.guests div.listWrapper ul").append(renderUserinList(guest));
   });
+
+
+
 };
 
 const initCalendar = () => {
@@ -70,8 +80,13 @@ const initCalendar = () => {
     });
   });
 
+  $(document)
+    .off("click")
+    .on("click", "#btnSignup", function () {
+      // remove previous eventHandker
+    });
   // create new event
-  $(document).on("click", "#SaveNewEventBtn", (event) => {
+  $(document).on("click", ".new #SaveNewEventBtn", (event) => {
     console.log("Inside add new event!");
     event.preventDefault();
 
@@ -88,21 +103,116 @@ const initCalendar = () => {
     };
 
     saveNewEvent(eventToAdd, addGuests);
+
   });
 
-  // edit event - not implenented !!!
+  // edit event
   $(document).on("click", "#editEventButton", (event) => {
-    console.log("Inside edit event!");
     event.preventDefault();
 
     $("#eventEditModal").modal("show");
     cleanAddModalFields();
+    console.log(currentEventInfo);
+    $("#editModalTitle.title").val(currentEventInfo.event._def.title);
+    if (currentEventInfo.event.extendedProps.public)
+      $('#checkbox').prop('checked', true);
+
+    console.log("0" + currentEventInfo.event.start.getHours() + ":" + currentEventInfo.event.start.getMinutes());
+    if (currentEventInfo.event.start.getHours() < 10)
+      $("#time").val("0" + currentEventInfo.event.start.getHours() + ":" + currentEventInfo.event.start.getMinutes() + "0");
+    else if (currentEventInfo.event.start.getMinutes() < 10)
+      $("#time").val(currentEventInfo.event.start.getHours() + ":" + currentEventInfo.event.start.getMinutes() + "0");
+    else
+      $("#time").val(currentEventInfo.event.start.getHours() + ":" + currentEventInfo.event.start.getMinutes());
+
+    $("#date").val(currentEventInfo.event.start.getFullYear() + "-" + (currentEventInfo.event.start.getMonth() + 1) + "-" + currentEventInfo.event.start.getDate());
+    $("#duration").val(currentEventInfo.event.extendedProps.myDuration);
+    $("#location").val(currentEventInfo.event.extendedProps.location);
+    $("#description").val(currentEventInfo.event.extendedProps.description);
+    
+    $("#organizerField").text(organizer.email);
+
+    $("#adminUsersShow").empty();
+    admins.forEach((admin) => {
+      $(".field.admins div.listWrapper ul").append(renderUserinList(admin));
+    });
+
+    $("#guestUsersShow").empty();
+    guests.forEach((guest) => {
+      $(".field.guests div.listWrapper ul").append(renderUserinList(guest));
+    });
+
+
+
+    //check if the user guest
+    for (let i = 0; i < guests.length; i++)
+      if (guests[i].user.id == sessionStorage.getItem("userId")) {
+        $(".modal-content").addClass("guest");
+      }
+
+
+    //check if the user admin
+    for (let i = 0; i < admins.length; i++)
+      if (admins[i].user.id == sessionStorage.getItem("userId")) {
+        $(".modal-content").addClass("admin");
+      }
+
+
+    //check if the user orginaizer
+      console.log(organizer)
+    // if (organizer.id == sessionStorage.getItem("userId")) {
+    //   $(".modal-content").removeClass("admin");
+    //   $(".modal-content").removeClass("guest");
+    // }
+
+    $(".modal-content").removeClass("new");
+    $(".modal-content").addClass("edit");
 
     // not implenented !!!
     // - get the event data - place in the right fields
     // - save updated
     // close 2 modals
   });
+//update event 
+$(document).on("click", ".edit #SaveNewEventBtn", (event) => {
+  console.log("Inside update event!");
+  event.preventDefault();
+  
+  // add to server
+  const eventToAdd = {
+    title: $("#editModalTitle").val(),
+    // time: $("#date").val() + "T" + $("#time").val(),
+    // date: $("#date").val(),
+    myDuration: $("#duration").val(),
+    location: $("#location").val(),
+    description: $("#description").val(),
+    organizer: sessionStorage.getItem("currentUser"),
+    public: $("#checkbox").is(":checked"),
+  };
+
+  updateEvent(eventToAdd, addGuests);
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // add guest - (event modal)
   $(document).on("click", "#eventAddGuest", (event) => {

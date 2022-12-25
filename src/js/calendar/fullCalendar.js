@@ -46,6 +46,10 @@ const initFullCal = () => {
           text: "Add Event",
           click: function () {
             $("#eventEditModal").modal("show"); // modal debug
+            $(".modal-content").removeClass("guest");
+            $(".modal-content").removeClass("admin");
+            $(".modal-content").removeClass("edit");
+            $(".modal-content").addClass("new");
             cleanAddModalFields();
           },
         },
