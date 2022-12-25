@@ -28,7 +28,9 @@ const login = (user) => {
       sessionStorage.setItem("userId", res.data.data.userId);
       sessionStorage.setItem("token", res.data.data.token);
       sessionStorage.setItem("currentUser", res.data.data.name);
-      $("header .me .name").text("Hi, " + res.data.data.name);
+      sessionStorage.setItem("city", res.data.data.city);
+      $("header .me .name").text("Hi, " + sessionStorage.currentUser);
+      $("header .city").text(sessionStorage.city);
     })
     .catch((error) => {
       $(".modal-title").text("Log In failed");
@@ -101,7 +103,7 @@ const loginGithub = (code) => {
       window.history.pushState({}, document.title, "/");
       console.log("booom");
 
-      // $("#modalLogin").modal("show");
+      // $("#modalResponse").modal("show");
       // $(".modal-title").text("Log In success");
       // $(".modal-body").text("Log In with Github successfull!");
     })
@@ -110,6 +112,61 @@ const loginGithub = (code) => {
       $(".modal-body").text("Log In with Github failed");
     });
   loginGithubFetchPromise();
+};
+
+// ------------------------ settings ----------------------------------
+const updateCity = (city) => {
+  const updateLocation = axios({
+    method: "PATCH",
+    url: serverAddress + "/user/updateCity",
+    headers: {
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
+    },
+    params: {
+      newCity: city,
+    },
+  })
+    .then((res) => {
+      const city = res.data.data.city;
+      sessionStorage.setItem("city", city);
+      $("header .city").text(city);
+
+      $("#modalResponse .modal-title").text("City update");
+      $("#modalResponse .modal-body").text("City was updated successfull!");
+      // $("#modalResponse").modal("show");
+    })
+    .catch((error) => {
+      $(".modal-title").text("City update");
+      $(".modal-body").text("City update failed!");
+    });
+  // updateLocation();
+};
+
+const updateNotificationsSettings = (settings) => {
+  console.log("updateNotificationsSettings");
+  const updateNotifications = axios({
+    method: "PUT",
+    url: serverAddress + "/user/update",
+    headers: {
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
+    },
+    params: {
+      notifications: "",
+    },
+    data: settings,
+  })
+    .then((res) => {
+      $("#modalResponse .modal-title").text("Notification Settings update");
+      $("#modalResponse .modal-body").text("Notification Settings were update");
+      // $("#modalResponse").modal("show");
+    })
+    .catch((error) => {
+      $(".modal-title").text("Notification Settings update");
+      $(".modal-body").text("Notification Settings update failed!!!");
+    });
+  // updateNotifications();
 };
 
 // ------------------------ events ----------------------------------
@@ -279,9 +336,7 @@ const saveNewEvent = (event, addGuests) => {
   });
 };
 
-
 const updateEvent = (event, addGuests) => {
-  
   const FetchPromise = axios({
     method: "PUT",
     url: serverAddress + "/event/updateEvent/event",
@@ -289,8 +344,8 @@ const updateEvent = (event, addGuests) => {
       "Content-Type": "application/json",
       token: sessionStorage.getItem("token"),
     },
-    params:{
-      eventId : sessionStorage.getItem("currentEventId")
+    params: {
+      eventId: sessionStorage.getItem("currentEventId"),
     },
     data: {
       title: event.title,
@@ -328,20 +383,10 @@ const updateEvent = (event, addGuests) => {
     // });
 
     // event.user.push(myGuest);
-     location.reload();
+    location.reload();
   }).catch((error) => {
     console.log(error.response.data.message);
   });
-
-
 };
 
-
-
-
-
-
-
-
-
-export { updateEvent,createUser, login, loginGithub, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest };
+export { updateEvent, createUser, login, loginGithub, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest, updateCity, updateNotificationsSettings };
