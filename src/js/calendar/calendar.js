@@ -1,5 +1,5 @@
 import { data } from "jquery";
-import { updateEvent,getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest } from "../rest";
+import { updateEvent, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest } from "../rest";
 import { calendar } from "./fullCalendar";
 import pubSub from "./pubsub";
 
@@ -27,7 +27,7 @@ const eventClickHandler = (info) => {
     else if (theRoles[i].roleType == "ADMIN") admins.push(theRoles[i]);
     else guests.push(theRoles[i]);
   }
-  
+
   console.log(organizer);
   console.log(admins);
   console.log(guests);
@@ -93,7 +93,7 @@ const initCalendar = () => {
     // add to server
     const eventToAdd = {
       title: $(".title").val(),
-      time: $("#date").val() + "T" + $("#time").val()+sessionStorage.zone,
+      time: $("#date").val() + "T" + $("#time").val() + sessionStorage.zone,
       myDuration: $("#duration").val(),
       location: $("#location").val(),
       description: $("#description").val(),
@@ -117,10 +117,12 @@ const initCalendar = () => {
       $('#checkbox').prop('checked', true);
 
     console.log("0" + currentEventInfo.event.start.getHours() + ":" + currentEventInfo.event.start.getMinutes());
-    if (currentEventInfo.event.start.getHours() < 10)
-      $("#time").val("0" + currentEventInfo.event.start.getHours() + ":" + currentEventInfo.event.start.getMinutes() + "0");
-    else if (currentEventInfo.event.start.getMinutes() < 10)
-      $("#time").val(currentEventInfo.event.start.getHours() + ":" + currentEventInfo.event.start.getMinutes() + "0");
+    if (currentEventInfo.event.start.getHours() < 10 && currentEventInfo.event.start.getMinutes() < 10)
+      $("#time").val("0" + currentEventInfo.event.start.getHours() + ":" + "0" + currentEventInfo.event.start.getMinutes());
+    else if (currentEventInfo.event.start.getHours() < 10 && currentEventInfo.event.start.getMinutes() >= 10)
+      $("#time").val("0"+currentEventInfo.event.start.getHours() + ":" +  currentEventInfo.event.start.getMinutes());
+    else if (currentEventInfo.event.start.getHours() >= 10 && currentEventInfo.event.start.getMinutes() < 10)
+      $("#time").val(currentEventInfo.event.start.getHours() + ":" + "0" + currentEventInfo.event.start.getMinutes());
     else
       $("#time").val(currentEventInfo.event.start.getHours() + ":" + currentEventInfo.event.start.getMinutes());
 
@@ -128,7 +130,7 @@ const initCalendar = () => {
     $("#duration").val(currentEventInfo.event.extendedProps.myDuration);
     $("#location").val(currentEventInfo.event.extendedProps.location);
     $("#description").val(currentEventInfo.event.extendedProps.description);
-    
+
     $("#organizerField").text(organizer.email);
 
     $("#adminUsersShow").empty();
@@ -158,7 +160,7 @@ const initCalendar = () => {
 
 
     //check if the user orginaizer
-      console.log(organizer)
+    console.log(organizer)
     if (organizer.id == sessionStorage.getItem("userId")) {
       $(".modal-content").removeClass("admin");
       $(".modal-content").removeClass("guest");
@@ -167,27 +169,27 @@ const initCalendar = () => {
     $(".modal-content").removeClass("new");
     $(".modal-content").addClass("edit");
 
-    
+
   });
-//update event 
-$(document).on("click", ".edit #SaveNewEventBtn", (event) => {
-  console.log("Inside update event!");
-  event.preventDefault();
-  
-  // add to server
-  const eventToAdd = {
-    title: $("#editModalTitle").val(),
-    time: $("#date").val() + "T" + $("#time").val()+sessionStorage.zone,
-    myDuration: $("#duration").val(),
-    location: $("#location").val(),
-    description: $("#description").val(),
-    organizer: sessionStorage.getItem("currentUser"),
-    public: $("#checkbox").is(":checked"),
-  };
+  //update event 
+  $(document).on("click", ".edit #SaveNewEventBtn", (event) => {
+    console.log("Inside update event!");
+    event.preventDefault();
 
-  updateEvent(eventToAdd, addGuests);
+    // add to server
+    const eventToAdd = {
+      title: $("#editModalTitle").val(),
+      time: $("#date").val() + "T" + $("#time").val() + sessionStorage.zone,
+      myDuration: $("#duration").val(),
+      location: $("#location").val(),
+      description: $("#description").val(),
+      organizer: sessionStorage.getItem("currentUser"),
+      public: $("#checkbox").is(":checked"),
+    };
 
-});
+    updateEvent(eventToAdd, addGuests);
+
+  });
 
 
 
