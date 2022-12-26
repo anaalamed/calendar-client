@@ -70,6 +70,7 @@ const initCalendar = () => {
     .on("click", "#btnSignup", function () {
       // remove previous eventHandker
     });
+
   // create new event
   $(document).on("click", ".new #SaveNewEventBtn", (event) => {
     console.log("Inside add new event!");
@@ -100,8 +101,9 @@ const initCalendar = () => {
     if (currentEventInfo.event.extendedProps.public) $("#checkbox").prop("checked", true);
 
     console.log("0" + currentEventInfo.event.start.getHours() + ":" + currentEventInfo.event.start.getMinutes());
-    if (currentEventInfo.event.start.getHours() < 10) $("#time").val("0" + currentEventInfo.event.start.getHours() + ":" + currentEventInfo.event.start.getMinutes() + "0");
-    else if (currentEventInfo.event.start.getMinutes() < 10) $("#time").val(currentEventInfo.event.start.getHours() + ":" + currentEventInfo.event.start.getMinutes() + "0");
+    if (currentEventInfo.event.start.getHours() < 10 && currentEventInfo.event.start.getMinutes() < 10) $("#time").val("0" + currentEventInfo.event.start.getHours() + ":" + "0" + currentEventInfo.event.start.getMinutes());
+    else if (currentEventInfo.event.start.getHours() < 10 && currentEventInfo.event.start.getMinutes() >= 10) $("#time").val("0" + currentEventInfo.event.start.getHours() + ":" + currentEventInfo.event.start.getMinutes());
+    else if (currentEventInfo.event.start.getHours() >= 10 && currentEventInfo.event.start.getMinutes() < 10) $("#time").val(currentEventInfo.event.start.getHours() + ":" + "0" + currentEventInfo.event.start.getMinutes());
     else $("#time").val(currentEventInfo.event.start.getHours() + ":" + currentEventInfo.event.start.getMinutes());
 
     $("#date").val(currentEventInfo.event.start.getFullYear() + "-" + (currentEventInfo.event.start.getMonth() + 1) + "-" + currentEventInfo.event.start.getDate());
@@ -135,6 +137,7 @@ const initCalendar = () => {
 
     //check if the user orginaizer
     console.log(organizer);
+
     if (organizer.id == sessionStorage.getItem("userId")) {
       $(".modal-content").removeClass("admin");
       $(".modal-content").removeClass("guest");
@@ -143,6 +146,7 @@ const initCalendar = () => {
     $(".modal-content").removeClass("new");
     $(".modal-content").addClass("edit");
   });
+
   //update event
   $(document).on("click", ".edit #SaveNewEventBtn", (event) => {
     console.log("Inside update event!");
