@@ -6,6 +6,12 @@ import $ from "jquery";
 
 var currentUserEvents = [];
 
+
+function time(){
+  $("header .time").text(calcTime(sessionStorage.zoneDiff));
+}
+setInterval(time,1000);
+
 // ------------------------ auth ----------------------------------
 const login = (user) => {
   const loginFetchPromise = axios({
@@ -21,7 +27,7 @@ const login = (user) => {
   });
 
   loginFetchPromise
-    .then((res) => {
+    .then(async (res) => {
       $(".modal-title").text("Log In success");
       $(".modal-body").text("Log In successfull!");
 
@@ -31,12 +37,74 @@ const login = (user) => {
       sessionStorage.setItem("city", res.data.data.city);
       $("header .me .name").text("Hi, " + sessionStorage.currentUser);
       $("header .city").text(sessionStorage.city);
+      
+
+      updateZone(sessionStorage.city);
+ 
+
+      await new Promise((r) => setTimeout(r, 2000));
+      window.location.replace("http://localhost:9000/");
+
+
+
     })
     .catch((error) => {
       $(".modal-title").text("Log In failed");
       $(".modal-body").text(error.response.data.message);
     });
 };
+
+function updateZone(city){
+  switch (city) {
+    case "JERUSALEM":
+      sessionStorage.setItem("zone", "+02:00");
+      sessionStorage.setItem("zoneDiff", "+2");
+      break;
+    case "PARIS":
+      sessionStorage.setItem("zone", "+01:00");
+      sessionStorage.setItem("zoneDiff", "+1");
+      break;
+    case "LONDON":
+      sessionStorage.setItem("zone", "+00:00");
+      sessionStorage.setItem("zoneDiff", "+0");
+      break;
+    case "NEW_YORK":
+      sessionStorage.setItem("zone", "-05:00");
+      sessionStorage.setItem("zoneDiff", "-5");
+      break;
+    default:
+      sessionStorage.setItem("zone", "+02:00");
+      sessionStorage.setItem("zoneDiff", "+2");
+  }
+}
+
+
+//calcTime
+function calcTime(offset) {
+  // create Date object for current location
+  var d = new Date();
+
+  // convert to msec
+  // subtract local time zone offset
+  // get UTC time in msec
+  var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+
+  // create new Date object for different city
+  // using supplied offset
+  var nd = new Date(utc + (3600000*offset));
+
+  // return time as a string
+  return nd.toLocaleString();
+}
+
+
+
+
+
+
+
+
+
 
 const createUser = (user) => {
   const createUserFetchPromise = axios({
@@ -119,6 +187,7 @@ const updateCity = (city) => {
 
       $("#modalResponse .modal-title").text("City update");
       $("#modalResponse .modal-body").text("City was updated successfull!");
+      updateZone(city);
       // $("#modalResponse").modal("show");
     })
     .catch((error) => {
@@ -243,7 +312,6 @@ const saveNewEvent = (event, addGuests) => {
     data: {
       title: event.title,
       time: event.time,
-      date: event.date,
       duration: event.myDuration,
       location: event.location,
       description: event.description,
@@ -295,8 +363,7 @@ const updateEvent = (event, addGuests) => {
     },
     data: {
       title: event.title,
-      // time: event.time,
-      // date: event.date,
+      time: event.time,
       duration: event.myDuration,
       location: event.location,
       description: event.description,

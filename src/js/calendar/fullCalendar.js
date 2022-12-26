@@ -7,7 +7,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import momentPlugin from "@fullcalendar/moment";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
 import { cleanAddModalFields, eventClickHandler } from "./calendar";
-
+var initialTimeZone = "local";
 let calendar;
 const initFullCal = () => {
   console.log("initFullCal");
@@ -18,6 +18,7 @@ const initFullCal = () => {
     let calendarEl = document.getElementById("calendar");
 
     calendar = new Calendar(calendarEl, {
+      timeZone:initialTimeZone,
       plugins: [adaptivePlugin, interactionPlugin, dayGridPlugin, listPlugin, timeGridPlugin, resourceTimelinePlugin, momentPlugin],
       titleFormat: "MM/YYYY",
       schedulerLicenseKey: "XXX",
@@ -58,9 +59,29 @@ const initFullCal = () => {
 
       eventClick: (info) => eventClickHandler(info),
     });
-
+   
     calendar.render();
   });
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export { initFullCal, calendar };

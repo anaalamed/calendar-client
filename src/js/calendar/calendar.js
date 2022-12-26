@@ -93,8 +93,7 @@ const initCalendar = () => {
     // add to server
     const eventToAdd = {
       title: $(".title").val(),
-      time: $("#date").val() + "T" + $("#time").val(),
-      date: $("#date").val(),
+      time: $("#date").val() + "T" + $("#time").val()+sessionStorage.zone,
       myDuration: $("#duration").val(),
       location: $("#location").val(),
       description: $("#description").val(),
@@ -160,18 +159,15 @@ const initCalendar = () => {
 
     //check if the user orginaizer
       console.log(organizer)
-    // if (organizer.id == sessionStorage.getItem("userId")) {
-    //   $(".modal-content").removeClass("admin");
-    //   $(".modal-content").removeClass("guest");
-    // }
+    if (organizer.id == sessionStorage.getItem("userId")) {
+      $(".modal-content").removeClass("admin");
+      $(".modal-content").removeClass("guest");
+    }
 
     $(".modal-content").removeClass("new");
     $(".modal-content").addClass("edit");
 
-    // not implenented !!!
-    // - get the event data - place in the right fields
-    // - save updated
-    // close 2 modals
+    
   });
 //update event 
 $(document).on("click", ".edit #SaveNewEventBtn", (event) => {
@@ -181,8 +177,7 @@ $(document).on("click", ".edit #SaveNewEventBtn", (event) => {
   // add to server
   const eventToAdd = {
     title: $("#editModalTitle").val(),
-    // time: $("#date").val() + "T" + $("#time").val(),
-    // date: $("#date").val(),
+    time: $("#date").val() + "T" + $("#time").val()+sessionStorage.zone,
     myDuration: $("#duration").val(),
     location: $("#location").val(),
     description: $("#description").val(),
