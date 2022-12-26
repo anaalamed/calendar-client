@@ -11,6 +11,7 @@ var guests = [];
 
 // click on the event
 const eventClickHandler = (info) => {
+  $("#eventModal").removeClass("admin organizer guest");
   admins = [];
   guests = [];
 
