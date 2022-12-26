@@ -438,6 +438,47 @@ const deleteEvent = async (id) => {
   return await deleteE;
 };
 
+const hideEvent = async (id) => {
+  const hide = axios({
+    method: "PATCH",
+    url: serverAddress + "/event/leaveEvent?eventId=" + sessionStorage.getItem("currentEventId"),
+    headers: {
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
+    },
+  })
+    .then((res) => {
+      console.log(res);
+      return res;
+    })
+    .catch((error) => {
+      console.log(error.response.data.message);
+    });
+  return await hide;
+};
+
+const switchStatus = async (isArrive) => {
+  const switchS = axios({
+    method: "PATCH",
+    url: serverAddress + "/event/switchStatus?eventId=" + sessionStorage.getItem("currentEventId"),
+    headers: {
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
+    },
+    params: {
+      booleanValue: isArrive,
+    },
+  })
+    .then((res) => {
+      console.log(res);
+      return res;
+    })
+    .catch((error) => {
+      console.log(error.response.data.message);
+    });
+  return await switchS;
+};
+
 // ------------------------ roles ----------------------------------
 // switch role - not implemented!
 
@@ -502,4 +543,4 @@ const removeGuest = async (email) => {
   return await remove;
 };
 
-export { updateEvent, createUser, login, loginGithub, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest, updateCity, updateNotificationsSettings, getSettings, switchRole, deleteEvent };
+export { updateEvent, createUser, login, loginGithub, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest, updateCity, updateNotificationsSettings, getSettings, switchRole, deleteEvent, hideEvent, switchStatus };

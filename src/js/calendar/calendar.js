@@ -1,5 +1,5 @@
 import { data } from "jquery";
-import { updateEvent, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest, switchRole, deleteEvent } from "../rest";
+import { updateEvent, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest, switchRole, deleteEvent, hideEvent, switchStatus } from "../rest";
 import { calendar } from "./fullCalendar";
 import pubSub from "./pubsub";
 
@@ -47,13 +47,23 @@ const eventClickHandler = (info) => {
   admins.forEach((admin) => {
     console.log(admin);
     renderUserinList(admin);
+    if (sessionStorage.userId == admin.user.id) {
+      $("#eventModal").addClass("admin");
+    }
   });
 
   $("#guestUsersShow").empty();
   guests.forEach((guest) => {
     console.log(guest);
     renderUserinList(guest);
+    if (sessionStorage.userId == guest.user.id) {
+      $("#eventModal").addClass("guest");
+    }
   });
+
+  if (sessionStorage.userId == organizer.id) {
+    $("#eventModal").addClass("organizer");
+  }
 };
 
 const initCalendar = () => {
@@ -223,6 +233,30 @@ const initCalendar = () => {
     }
   });
 
+  // switch status - approve
+  $(document).on("click", ".modal-footer-buttons #approve", async function (event) {
+    console.log("Inside switch status");
+    event.preventDefault();
+
+    const res = await switchStatus(true);
+    if (res.status == 200) {
+      $("#eventModal").modal("hide");
+      // do the change at the popup
+    }
+  });
+
+  // switch status - reject
+  $(document).on("click", ".modal-footer-buttons #reject", async function (event) {
+    console.log("Inside switch status");
+    event.preventDefault();
+
+    const res = await switchStatus(false);
+    if (res.status == 200) {
+      $("#eventModal").modal("hide");
+      // do the change at the popup
+    }
+  });
+
   // delete event
   $(document).on("click", "#deleteEventButton", async function (event) {
     console.log("Inside deleteEventButton");
@@ -231,6 +265,21 @@ const initCalendar = () => {
     const res = await deleteEvent();
     if (res.status == 200) {
       console.log("event was deleted");
+      $("#eventModal").modal("hide");
+      // delete from full calendar
+      const event = calendar.getEventById(sessionStorage.currentEventId);
+      event.remove();
+    }
+  });
+
+  // hide event
+  $(document).on("click", ".modal-footer-buttons #hide", async function (event) {
+    console.log("Inside hideEvent");
+    event.preventDefault();
+
+    const res = await hideEvent();
+    if (res.status == 200) {
+      console.log("event was hided");
       $("#eventModal").modal("hide");
       // delete from full calendar
       const event = calendar.getEventById(sessionStorage.currentEventId);

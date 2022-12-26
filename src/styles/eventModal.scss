@@ -117,4 +117,66 @@
         }
         
     }
+
+    .modal-footer {
+        display: flex;
+        justify-content: space-between;
+
+        .modal-footer-buttons {
+            display: flex;
+            justify-content: space-around;
+            width: 60%;
+    
+            .arrive {
+                display: flex;
+                justify-content: space-evenly;
+                width: 50%;
+            }
+
+            .button {
+                background-color: aqua;
+                padding: 5px 10px;
+                border-radius: 10px;
+            }
+
+            #approve {
+                background-color: rgb(165, 226, 165);
+            }
+
+            #reject {
+                background-color: rgb(234, 154, 154);
+            }
+
+            #hide {
+                background-color: rgb(234, 61, 61);
+            }
+    
+        }
+    }
+}
+
+// roles changes 
+
+#eventModal.admin,
+#eventModal.guest {
+    .users .listWrapper div[class*="ChangeRole"],
+    .users .listWrapper div[class*="Remove"] {
+        display: none;
+    }
+
+    .modal-header-buttons #deleteEventButton {
+        display: none;
+    }
+}
+
+#eventModal.organizer {
+  .modal-footer-buttons .arrive, 
+  .modal-footer-buttons #hide {
+        display: none;
+    }
+
+}
+
+#eventModal.guest .users .row.addGuest {
+    display: none;
 }
