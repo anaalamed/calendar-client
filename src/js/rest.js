@@ -384,7 +384,7 @@ const saveNewEvent = (event, addGuests) => {
 };
 
 const updateEvent = (event, addGuests) => {
-  const FetchPromise = axios({
+  const update = axios({
     method: "PUT",
     url: serverAddress + "/event/updateEvent/event",
     headers: {
@@ -404,35 +404,38 @@ const updateEvent = (event, addGuests) => {
       public: event.public,
       user: [],
     },
-  });
+  })
+    .then(async (res) => {
+      console.log(res.data.data);
+      sessionStorage.setItem("currentEventId", res.data.data.id);
+      for (let i = 0; i < addGuests.length; i++) {
+        inviteGuest(addGuests[i]);
+        await new Promise((r) => setTimeout(r, 2000));
+      }
+      // location.reload();
+    })
+    .catch((error) => {
+      console.log(error.response.data.message);
+    });
+};
 
-  FetchPromise.then(async (res) => {
-    console.log(res.data.data);
-    sessionStorage.setItem("currentEventId", res.data.data.id);
-    for (let i = 0; i < addGuests.length; i++) {
-      inviteGuest(addGuests[i]);
-      await new Promise((r) => setTimeout(r, 2000));
-    }
-
-    // add to fullCalendar
-    // calendar.addEvent({
-    //   title: $("#editModalTitle").val(),
-    //   start: $("#date").val() + "T" + $("#time").val(),
-    //   end: "2022-12-19T20:00:00",
-    //   extendedProps: {
-    //     public: $("#checkbox").is(":checked"),
-    //     location: $("#location").val(),
-    //     organizer: sessionStorage.getItem("currentUser"),
-    //     duration: $("#duration").val(),
-    //   },
-    //   description: $("#description").val(),
-    // });
-
-    // event.user.push(myGuest);
-    location.reload();
-  }).catch((error) => {
-    console.log(error.response.data.message);
-  });
+const deleteEvent = async (id) => {
+  const deleteE = axios({
+    method: "DELETE",
+    url: serverAddress + "/event/deleteEvent?eventId=" + sessionStorage.getItem("currentEventId"),
+    headers: {
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
+    },
+  })
+    .then((res) => {
+      console.log(res);
+      return res;
+    })
+    .catch((error) => {
+      console.log(error.response.data.message);
+    });
+  return await deleteE;
 };
 
 // ------------------------ roles ----------------------------------
@@ -441,7 +444,7 @@ const updateEvent = (event, addGuests) => {
 const switchRole = async (id) => {
   const switchR = axios({
     method: "PATCH",
-    url: serverAddress + "/event/switchRole?eventId=" + sessionStorage.getItem("currentEventId"), // Will need to change to eventId later!!!!~~~~~~
+    url: serverAddress + "/event/switchRole?eventId=" + sessionStorage.getItem("currentEventId"),
     headers: {
       "Content-Type": "application/json",
       token: sessionStorage.getItem("token"),
@@ -499,4 +502,4 @@ const removeGuest = async (email) => {
   return await remove;
 };
 
-export { updateEvent, createUser, login, loginGithub, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest, updateCity, updateNotificationsSettings, getSettings, switchRole };
+export { updateEvent, createUser, login, loginGithub, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest, updateCity, updateNotificationsSettings, getSettings, switchRole, deleteEvent };

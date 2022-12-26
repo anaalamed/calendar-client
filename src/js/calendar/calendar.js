@@ -1,5 +1,5 @@
 import { data } from "jquery";
-import { updateEvent, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest, switchRole } from "../rest";
+import { updateEvent, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest, switchRole, deleteEvent } from "../rest";
 import { calendar } from "./fullCalendar";
 import pubSub from "./pubsub";
 
@@ -15,6 +15,7 @@ const eventClickHandler = (info) => {
   guests = [];
 
   console.log(info);
+  const eventId = info.event._def.publicId;
   currentEventInfo = info;
   var theRoles = info.event.extendedProps.roles;
 
@@ -31,6 +32,7 @@ const eventClickHandler = (info) => {
   console.log(guests);
 
   $("#eventModal").modal("show");
+  $("#eventModal").attr("event-id", eventId);
   $(".modal-title").text(info.event._def.title);
   $(".row.field.public .content").text(info.event.extendedProps.public);
   $(".row.field.time .content").text(info.event.start.getHours() + ":" + info.event.start.getMinutes());
@@ -164,9 +166,20 @@ const initCalendar = () => {
     };
 
     updateEvent(eventToAdd, addGuests);
+    // need to add if success...
+
+    // update fullCalendar
+    const calendarEvent = calendar.getEventById(sessionStorage.currentEventId);
+    calendarEvent.setProp("title", eventToAdd.title);
+    // calendarEvent.setProp("start", );    --------------------- mostafa help!!!
+    // calendarEvent.setProp("end", );      --------------------- mostafa help!!!
+    calendarEvent.setExtendedProp("public", eventToAdd.public);
+    calendarEvent.setExtendedProp("location", eventToAdd.location);
+    calendarEvent.setExtendedProp("guests", eventToAdd.g);
+    calendarEvent.setExtendedProp("duration", eventToAdd.duration);
   });
 
-  //switch role - not impl
+  //switch role
   $(document).on("click", ".guestChangeRole, .adminChangeRole", async function (event) {
     console.log("Inside switch role!");
     event.preventDefault();
@@ -180,7 +193,7 @@ const initCalendar = () => {
     }
   });
 
-  // invite guest - (event modal)
+  // invite guest
   $(document).on("click", "#eventAddGuest", async (event) => {
     console.log("Inside add guest to event (event modal)");
     event.preventDefault();
@@ -207,6 +220,21 @@ const initCalendar = () => {
     console.log("delete res: " + res);
     if (res == true) {
       $(this).parent(".userWrpper").remove();
+    }
+  });
+
+  // delete event
+  $(document).on("click", "#deleteEventButton", async function (event) {
+    console.log("Inside deleteEventButton");
+    event.preventDefault();
+
+    const res = await deleteEvent();
+    if (res.status == 200) {
+      console.log("event was deleted");
+      $("#eventModal").modal("hide");
+      // delete from full calendar
+      const event = calendar.getEventById(sessionStorage.currentEventId);
+      event.remove();
     }
   });
 };
