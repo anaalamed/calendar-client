@@ -1,6 +1,5 @@
 import { serverAddress } from "./constants";
 import { calendar } from "../js/calendar/fullCalendar";
-import { renderUserinList } from "../js/calendar/calendar";
 import axios from "axios";
 import $ from "jquery";
 
@@ -10,68 +9,6 @@ function time() {
   $("header .time").text(calcTime(sessionStorage.zoneDiff));
 }
 setInterval(time, 1000);
-
-// ------------------------ auth ----------------------------------
-const login = (user) => {
-  const loginFetchPromise = axios({
-    method: "post",
-    url: serverAddress + "/auth/login",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    data: {
-      email: user.email,
-      password: user.password,
-    },
-  });
-
-  loginFetchPromise
-    .then(async (res) => {
-      $(".modal-title").text("Log In success");
-      $(".modal-body").text("Log In successfull!");
-
-      sessionStorage.setItem("userId", res.data.data.userId);
-      sessionStorage.setItem("token", res.data.data.token);
-      sessionStorage.setItem("currentUser", res.data.data.name);
-      sessionStorage.setItem("city", res.data.data.city);
-      $("header .me .name").text("Hi, " + sessionStorage.currentUser);
-      $("header .city").text(sessionStorage.city);
-      $("body").addClass("loggedin");
-
-      updateZone(sessionStorage.city);
-
-      await new Promise((r) => setTimeout(r, 2000));
-      window.location.replace("http://localhost:9000/");
-    })
-    .catch((error) => {
-      $(".modal-title").text("Log In failed");
-      $(".modal-body").text(error.response.data.message);
-    });
-};
-
-function updateZone(city) {
-  switch (city) {
-    case "JERUSALEM":
-      sessionStorage.setItem("zone", "+02:00");
-      sessionStorage.setItem("zoneDiff", "+2");
-      break;
-    case "PARIS":
-      sessionStorage.setItem("zone", "+01:00");
-      sessionStorage.setItem("zoneDiff", "+1");
-      break;
-    case "LONDON":
-      sessionStorage.setItem("zone", "+00:00");
-      sessionStorage.setItem("zoneDiff", "+0");
-      break;
-    case "NEW_YORK":
-      sessionStorage.setItem("zone", "-05:00");
-      sessionStorage.setItem("zoneDiff", "-5");
-      break;
-    default:
-      sessionStorage.setItem("zone", "+02:00");
-      sessionStorage.setItem("zoneDiff", "+2");
-  }
-}
 
 //calcTime
 function calcTime(offset) {
@@ -94,142 +31,6 @@ function calcTime(offset) {
   // return time as a string
   return nd.toLocaleString();
 }
-
-const createUser = (user) => {
-  const createUserFetchPromise = axios({
-    method: "post",
-    url: serverAddress + "/auth/signup",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    data: {
-      email: user.email,
-      name: user.name,
-      password: user.password,
-    },
-  });
-
-  createUserFetchPromise
-    .then((res) => {
-      $(".modal-title").text("Registration success");
-      $(".modal-body").text("Registration successfull!");
-
-      $(document).on("click", "#signUpCloseBtn", function (event) {
-        window.location.replace("http://localhost:9000/");
-      });
-    })
-    .catch((error) => {
-      $(".modal-title").text("Registration failed");
-      $(".modal-body").text(error.response.data.message);
-    });
-};
-
-const loginGithub = (code) => {
-  const loginGithubFetchPromise = axios({
-    method: "post",
-    url: serverAddress + "/auth/loginGithub",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    params: {
-      code: code,
-    },
-  })
-    .then((res) => {
-      sessionStorage.setItem("userId", res.data.data.userId);
-      sessionStorage.setItem("token", res.data.data.token);
-      sessionStorage.setItem("currentUser", res.data.data.name);
-      $("header .me .name").text("Hi, " + res.data.data.name);
-
-      window.history.pushState({}, document.title, "/");
-      console.log("booom");
-
-      // $("#modalResponse").modal("show");
-      // $(".modal-title").text("Log In success");
-      // $(".modal-body").text("Log In with Github successfull!");
-    })
-    .catch((error) => {
-      $(".modal-title").text("Log In failed");
-      $(".modal-body").text("Log In with Github failed");
-    });
-  loginGithubFetchPromise();
-};
-
-// ------------------------ settings ----------------------------------
-// right implementation!
-const getSettings = async (city) => {
-  const getMySettings = axios({
-    method: "GET",
-    url: serverAddress + "/user/getNotificationSettings",
-    headers: {
-      "Content-Type": "application/json",
-      token: sessionStorage.getItem("token"),
-    },
-  })
-    .then((res) => {
-      // console.log(res.data);
-      return res;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  return await getMySettings;
-};
-
-const updateCity = (city) => {
-  const updateLocation = axios({
-    method: "PATCH",
-    url: serverAddress + "/user/updateCity",
-    headers: {
-      "Content-Type": "application/json",
-      token: sessionStorage.getItem("token"),
-    },
-    params: {
-      newCity: city,
-    },
-  })
-    .then((res) => {
-      const city = res.data.data.city;
-      sessionStorage.setItem("city", city);
-      $("header .city").text(city);
-
-      $("#modalResponse .modal-title").text("City update");
-      $("#modalResponse .modal-body").text("City was updated successfull!");
-      updateZone(city);
-      // $("#modalResponse").modal("show");
-    })
-    .catch((error) => {
-      $(".modal-title").text("City update");
-      $(".modal-body").text("City update failed!");
-    });
-  // updateLocation();
-};
-
-const updateNotificationsSettings = (settings) => {
-  console.log("updateNotificationsSettings");
-  const updateNotifications = axios({
-    method: "PUT",
-    url: serverAddress + "/user/update",
-    headers: {
-      "Content-Type": "application/json",
-      token: sessionStorage.getItem("token"),
-    },
-    params: {
-      notifications: "",
-    },
-    data: settings,
-  })
-    .then((res) => {
-      $("#modalResponse .modal-title").text("Notification Settings update");
-      $("#modalResponse .modal-body").text("Notification Settings were update");
-      // $("#modalResponse").modal("show");
-    })
-    .catch((error) => {
-      $(".modal-title").text("Notification Settings update");
-      $(".modal-body").text("Notification Settings update failed!!!");
-    });
-  // updateNotifications();
-};
 
 // ------------------------ events ----------------------------------
 // origin
@@ -482,26 +283,6 @@ const switchStatus = async (isArrive) => {
 // ------------------------ roles ----------------------------------
 // switch role - not implemented!
 
-const switchRole = async (id) => {
-  const switchR = axios({
-    method: "PATCH",
-    url: serverAddress + "/event/switchRole?eventId=" + sessionStorage.getItem("currentEventId"),
-    headers: {
-      "Content-Type": "application/json",
-      token: sessionStorage.getItem("token"),
-    },
-    data: id,
-  })
-    .then((res) => {
-      console.log(res);
-      return res;
-    })
-    .catch((error) => {
-      console.log(error.response.data.message);
-    });
-  return await switchR;
-};
-
 const inviteGuest = async (email) => {
   const invite = axios({
     method: "POST",
@@ -543,4 +324,24 @@ const removeGuest = async (email) => {
   return await remove;
 };
 
-export { updateEvent, createUser, login, loginGithub, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest, updateCity, updateNotificationsSettings, getSettings, switchRole, deleteEvent, hideEvent, switchStatus };
+const switchRole = async (id) => {
+  const switchR = axios({
+    method: "PATCH",
+    url: serverAddress + "/event/switchRole?eventId=" + sessionStorage.getItem("currentEventId"),
+    headers: {
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
+    },
+    data: id,
+  })
+    .then((res) => {
+      console.log(res);
+      return res;
+    })
+    .catch((error) => {
+      console.log(error.response.data.message);
+    });
+  return await switchR;
+};
+
+export { updateEvent, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest, switchRole, deleteEvent, hideEvent, switchStatus };

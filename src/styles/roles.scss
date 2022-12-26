@@ -40,6 +40,9 @@ body.loggedin header {
 
 }
 
-#eventModal.guest .users .row.addGuest {
+#eventModal.guest  {
+  .users .row.addGuest,
+  #editEventButton {
     display: none;
+  }
 }

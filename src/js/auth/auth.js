@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { createUser, login, loginGithub } from "../rest";
+import { createUser, login, loginGithub } from "./rest";
 
 const initRegistration = () => {
   console.log("init registration ");

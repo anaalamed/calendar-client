@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { updateCity, updateNotificationsSettings, getSettings } from "../rest";
+import { updateCity, updateNotificationsSettings, getSettings } from "./rest";
 
 const initSettings = async () => {
   console.log("initSettings");
