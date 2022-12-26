@@ -21,7 +21,8 @@ i {
 }
 
 body.loggedin .navbar-nav .menuItems {
-  li.signup, li.login {
+  //  li.login,
+  li.signup {
     display: none;
   }
 }

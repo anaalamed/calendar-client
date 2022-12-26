@@ -152,7 +152,26 @@ const loginGithub = (code) => {
 };
 
 // ------------------------ settings ----------------------------------
-// get notification settings - not implemented!
+// right implementation!
+const getSettings = async (city) => {
+  const getMySettings = axios({
+    method: "GET",
+    url: serverAddress + "/user/getNotificationSettings",
+    headers: {
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
+    },
+  })
+    .then((res) => {
+      // console.log(res.data);
+      return res;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return await getMySettings;
+};
+
 const updateCity = (city) => {
   const updateLocation = axios({
     method: "PATCH",
@@ -430,4 +449,4 @@ const removeGuest = (email) => {
   });
 };
 
-export { updateEvent, createUser, login, loginGithub, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest, updateCity, updateNotificationsSettings };
+export { updateEvent, createUser, login, loginGithub, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest, updateCity, updateNotificationsSettings, getSettings };
