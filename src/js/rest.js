@@ -6,11 +6,10 @@ import $ from "jquery";
 
 var currentUserEvents = [];
 
-
-function time(){
+function time() {
   $("header .time").text(calcTime(sessionStorage.zoneDiff));
 }
-setInterval(time,1000);
+setInterval(time, 1000);
 
 // ------------------------ auth ----------------------------------
 const login = (user) => {
@@ -37,16 +36,12 @@ const login = (user) => {
       sessionStorage.setItem("city", res.data.data.city);
       $("header .me .name").text("Hi, " + sessionStorage.currentUser);
       $("header .city").text(sessionStorage.city);
-      
+      $("body").addClass("loggedin");
 
       updateZone(sessionStorage.city);
- 
 
       await new Promise((r) => setTimeout(r, 2000));
       window.location.replace("http://localhost:9000/");
-
-
-
     })
     .catch((error) => {
       $(".modal-title").text("Log In failed");
@@ -54,7 +49,7 @@ const login = (user) => {
     });
 };
 
-function updateZone(city){
+function updateZone(city) {
   switch (city) {
     case "JERUSALEM":
       sessionStorage.setItem("zone", "+02:00");
@@ -78,7 +73,6 @@ function updateZone(city){
   }
 }
 
-
 //calcTime
 function calcTime(offset) {
   // create Date object for current location
@@ -87,24 +81,15 @@ function calcTime(offset) {
   // convert to msec
   // subtract local time zone offset
   // get UTC time in msec
-  var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+  var utc = d.getTime() + d.getTimezoneOffset() * 60000;
 
   // create new Date object for different city
   // using supplied offset
-  var nd = new Date(utc + (3600000*offset));
+  var nd = new Date(utc + 3600000 * offset);
 
   // return time as a string
   return nd.toLocaleString();
 }
-
-
-
-
-
-
-
-
-
 
 const createUser = (user) => {
   const createUserFetchPromise = axios({

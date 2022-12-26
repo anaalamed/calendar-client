@@ -13,6 +13,7 @@ $(() => {
     if (sessionStorage.length > 0) {
       $("header .me .name").text("Hi, " + sessionStorage.currentUser);
       $("header .city").text(sessionStorage.city);
+      $("body").addClass("loggedin");
     }
   });
 });
