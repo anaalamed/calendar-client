@@ -3,7 +3,7 @@ const initShare = () => {
   var checkboxContainer = $(`<div class='checkboxContainer'><label for='normal' style="margin-right: 10%;">${sessionStorage.getItem("currentUser")}</label><input type='checkbox' id=${sessionStorage.getItem("userId")} checked></br>`);
 
   // Append it to FullCalendar.
-  $(".calendar").after(checkboxContainer);
+  $(".side_wrapper .calendar").after(checkboxContainer);
 
   // Click handler
   $(`#${sessionStorage.getItem("userId")}`).on("click", function () {
