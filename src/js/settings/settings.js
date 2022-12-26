@@ -3,9 +3,10 @@ import { updateCity, updateNotificationsSettings, getSettings } from "../rest";
 
 const initSettings = async () => {
   console.log("initSettings");
+
+  // at loading page
   const res = await getSettings();
   const settings = res.data.data;
-  console.log(settings);
   setSettings(settings);
   setCity();
 
@@ -18,11 +19,10 @@ const initSettings = async () => {
 
   // update city
   $(document).on("click", "#updateCity", function (event) {
-    event.preventDefault();
     console.log("update city");
+    event.preventDefault();
 
     const city = $("form#settingsLocation div select#city").val();
-    console.log(city);
     updateCity(city);
   });
 
@@ -32,7 +32,6 @@ const initSettings = async () => {
     event.preventDefault();
 
     const settings = getSettingsObject();
-    console.log(settings);
     updateNotificationsSettings(settings);
   });
 };

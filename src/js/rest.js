@@ -409,8 +409,28 @@ const updateEvent = (event, addGuests) => {
 // ------------------------ roles ----------------------------------
 // switch role - not implemented!
 
-const inviteGuest = (email) => {
-  const FetchPromise = axios({
+const switchRole = async (id) => {
+  const switchR = axios({
+    method: "PATCH",
+    url: serverAddress + "/event/switchRole?eventId=" + sessionStorage.getItem("currentEventId"), // Will need to change to eventId later!!!!~~~~~~
+    headers: {
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
+    },
+    data: id,
+  })
+    .then((res) => {
+      console.log(res);
+      return res;
+    })
+    .catch((error) => {
+      console.log(error.response.data.message);
+    });
+  return await switchR;
+};
+
+const inviteGuest = async (email) => {
+  const invite = axios({
     method: "POST",
     url: serverAddress + "/event/inviteGuest?eventId=" + sessionStorage.getItem("currentEventId") + "&email=" + email, // Will need to change to eventId later!!!!~~~~~~
     headers: {
@@ -418,20 +438,19 @@ const inviteGuest = (email) => {
       token: sessionStorage.getItem("token"),
     },
     data: {},
-  });
-
-  FetchPromise.then((res) => {
-    const user = res.data.data;
-    console.log(user);
-    $(".field.guests div.listWrapper ul").append(renderUserinList(user));
-    return user;
-  }).catch((error) => {
-    console.log(error.response.data.message);
-  });
+  })
+    .then((res) => {
+      // console.log(res);
+      return res;
+    })
+    .catch((error) => {
+      console.log(error.response.data.message);
+    });
+  return await invite;
 };
 
-const removeGuest = (email) => {
-  const FetchPromise = axios({
+const removeGuest = async (email) => {
+  const remove = axios({
     method: "DELETE",
     url: serverAddress + "/event/removeGuest?eventId=" + sessionStorage.getItem("currentEventId") + "&email=" + email,
     headers: {
@@ -439,14 +458,16 @@ const removeGuest = (email) => {
       token: sessionStorage.getItem("token"),
     },
     data: {},
-  });
-
-  FetchPromise.then((res) => {
-    console.log(res.data.data);
-    return true;
-  }).catch((error) => {
-    console.log(error.response.data.message);
-  });
+  })
+    .then((res) => {
+      console.log(res.data.data);
+      return true;
+    })
+    .catch((error) => {
+      console.log(error.response.data.message);
+      return false;
+    });
+  return await remove;
 };
 
-export { updateEvent, createUser, login, loginGithub, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest, updateCity, updateNotificationsSettings, getSettings };
+export { updateEvent, createUser, login, loginGithub, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest, updateCity, updateNotificationsSettings, getSettings, switchRole };

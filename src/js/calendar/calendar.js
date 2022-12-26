@@ -1,5 +1,5 @@
 import { data } from "jquery";
-import { updateEvent,getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest } from "../rest";
+import { updateEvent, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest, switchRole } from "../rest";
 import { calendar } from "./fullCalendar";
 import pubSub from "./pubsub";
 
@@ -9,10 +9,8 @@ var organizer;
 var admins = [];
 var guests = [];
 
-
 // click on the event
 const eventClickHandler = (info) => {
-
   admins = [];
   guests = [];
 
@@ -27,7 +25,7 @@ const eventClickHandler = (info) => {
     else if (theRoles[i].roleType == "ADMIN") admins.push(theRoles[i]);
     else guests.push(theRoles[i]);
   }
-  
+
   console.log(organizer);
   console.log(admins);
   console.log(guests);
@@ -46,17 +44,14 @@ const eventClickHandler = (info) => {
   $("#adminUsersShow").empty();
   admins.forEach((admin) => {
     console.log(admin);
-    $(".field.admins div.listWrapper ul").append(renderUserinList(admin));
+    renderUserinList(admin);
   });
 
   $("#guestUsersShow").empty();
   guests.forEach((guest) => {
     console.log(guest);
-    $(".field.guests div.listWrapper ul").append(renderUserinList(guest));
+    renderUserinList(guest);
   });
-
-
-
 };
 
 const initCalendar = () => {
@@ -67,16 +62,6 @@ const initCalendar = () => {
     // change date from side calendar
     pubSub.subscribe("anEvent", (date) => {
       calendar.gotoDate(date);
-    });
-
-    // remove guest
-    $(document).on("click", ".guestRemove", function (event) {
-      console.log("Inside Remove Guest From Event!");
-      event.preventDefault();
-
-      const email = $(this).siblings(".guestEmail").text();
-      console.log("userId token", sessionStorage.getItem("userId"));
-      console.log("delete res: " + removeGuest(email));
     });
   });
 
@@ -93,7 +78,7 @@ const initCalendar = () => {
     // add to server
     const eventToAdd = {
       title: $(".title").val(),
-      time: $("#date").val() + "T" + $("#time").val()+sessionStorage.zone,
+      time: $("#date").val() + "T" + $("#time").val() + sessionStorage.zone,
       myDuration: $("#duration").val(),
       location: $("#location").val(),
       description: $("#description").val(),
@@ -102,7 +87,6 @@ const initCalendar = () => {
     };
 
     saveNewEvent(eventToAdd, addGuests);
-
   });
 
   // edit event
@@ -113,35 +97,29 @@ const initCalendar = () => {
     cleanAddModalFields();
     console.log(currentEventInfo);
     $("#editModalTitle.title").val(currentEventInfo.event._def.title);
-    if (currentEventInfo.event.extendedProps.public)
-      $('#checkbox').prop('checked', true);
+    if (currentEventInfo.event.extendedProps.public) $("#checkbox").prop("checked", true);
 
     console.log("0" + currentEventInfo.event.start.getHours() + ":" + currentEventInfo.event.start.getMinutes());
-    if (currentEventInfo.event.start.getHours() < 10)
-      $("#time").val("0" + currentEventInfo.event.start.getHours() + ":" + currentEventInfo.event.start.getMinutes() + "0");
-    else if (currentEventInfo.event.start.getMinutes() < 10)
-      $("#time").val(currentEventInfo.event.start.getHours() + ":" + currentEventInfo.event.start.getMinutes() + "0");
-    else
-      $("#time").val(currentEventInfo.event.start.getHours() + ":" + currentEventInfo.event.start.getMinutes());
+    if (currentEventInfo.event.start.getHours() < 10) $("#time").val("0" + currentEventInfo.event.start.getHours() + ":" + currentEventInfo.event.start.getMinutes() + "0");
+    else if (currentEventInfo.event.start.getMinutes() < 10) $("#time").val(currentEventInfo.event.start.getHours() + ":" + currentEventInfo.event.start.getMinutes() + "0");
+    else $("#time").val(currentEventInfo.event.start.getHours() + ":" + currentEventInfo.event.start.getMinutes());
 
     $("#date").val(currentEventInfo.event.start.getFullYear() + "-" + (currentEventInfo.event.start.getMonth() + 1) + "-" + currentEventInfo.event.start.getDate());
     $("#duration").val(currentEventInfo.event.extendedProps.myDuration);
     $("#location").val(currentEventInfo.event.extendedProps.location);
     $("#description").val(currentEventInfo.event.extendedProps.description);
-    
+
     $("#organizerField").text(organizer.email);
 
     $("#adminUsersShow").empty();
     admins.forEach((admin) => {
-      $(".field.admins div.listWrapper ul").append(renderUserinList(admin));
+      renderUserinList(admin);
     });
 
     $("#guestUsersShow").empty();
     guests.forEach((guest) => {
-      $(".field.guests div.listWrapper ul").append(renderUserinList(guest));
+      renderUserinList(guest);
     });
-
-
 
     //check if the user guest
     for (let i = 0; i < guests.length; i++)
@@ -149,16 +127,14 @@ const initCalendar = () => {
         $(".modal-content").addClass("guest");
       }
 
-
     //check if the user admin
     for (let i = 0; i < admins.length; i++)
       if (admins[i].user.id == sessionStorage.getItem("userId")) {
         $(".modal-content").addClass("admin");
       }
 
-
     //check if the user orginaizer
-      console.log(organizer)
+    console.log(organizer);
     if (organizer.id == sessionStorage.getItem("userId")) {
       $(".modal-content").removeClass("admin");
       $(".modal-content").removeClass("guest");
@@ -166,65 +142,69 @@ const initCalendar = () => {
 
     $(".modal-content").removeClass("new");
     $(".modal-content").addClass("edit");
-
-    
   });
-//update event 
-$(document).on("click", ".edit #SaveNewEventBtn", (event) => {
-  console.log("Inside update event!");
-  event.preventDefault();
-  
-  // add to server
-  const eventToAdd = {
-    title: $("#editModalTitle").val(),
-    time: $("#date").val() + "T" + $("#time").val()+sessionStorage.zone,
-    myDuration: $("#duration").val(),
-    location: $("#location").val(),
-    description: $("#description").val(),
-    organizer: sessionStorage.getItem("currentUser"),
-    public: $("#checkbox").is(":checked"),
-  };
+  //update event
+  $(document).on("click", ".edit #SaveNewEventBtn", (event) => {
+    console.log("Inside update event!");
+    event.preventDefault();
 
-  updateEvent(eventToAdd, addGuests);
+    // add to server
+    const eventToAdd = {
+      title: $("#editModalTitle").val(),
+      time: $("#date").val() + "T" + $("#time").val() + sessionStorage.zone,
+      myDuration: $("#duration").val(),
+      location: $("#location").val(),
+      description: $("#description").val(),
+      organizer: sessionStorage.getItem("currentUser"),
+      public: $("#checkbox").is(":checked"),
+    };
 
-});
+    updateEvent(eventToAdd, addGuests);
+  });
 
+  //switch role - not impl
+  $(document).on("click", ".guestChangeRole, .adminChangeRole", async function (event) {
+    console.log("Inside switch role!");
+    event.preventDefault();
 
+    const id = $(this).parent(".userWrpper").attr("id");
+    const res = await switchRole(id);
+    console.log(res);
+    if (res.status == 200) {
+      $(this).parent(".userWrpper").remove();
+      renderUserinList(res.data.data);
+    }
+  });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // add guest - (event modal)
-  $(document).on("click", "#eventAddGuest", (event) => {
+  // invite guest - (event modal)
+  $(document).on("click", "#eventAddGuest", async (event) => {
     console.log("Inside add guest to event (event modal)");
     event.preventDefault();
     const email = $(".row.addGuest input").val();
-    console.log(email);
     // addGuests.push(email);
-    inviteGuest(email);
+    const res = await inviteGuest(email);
+    console.log(res);
 
-    // $(".field.guests div.listWrapper ul").append(renderUserinList(guest));
+    if (res.status == 200) {
+      renderUserinList(res.data.data);
+    }
 
     $(".row.addGuest input").val("");
   });
 
-  // request is not implemented for:
-  // - change role,
+  // remove guest
+  $(document).on("click", ".guestRemove, .adminRemove", async function (event) {
+    console.log("Inside Remove Guest From Event!");
+    event.preventDefault();
+
+    // const email = $(this).siblings(".guestEmail").text();
+    const email = $(this).siblings("div[class*=Email]").text();
+    const res = await removeGuest(email);
+    console.log("delete res: " + res);
+    if (res == true) {
+      $(this).parent(".userWrpper").remove();
+    }
+  });
 };
 
 // ------------------------- utils functions ------------------------------
@@ -265,12 +245,20 @@ const renderUserinList = (user) => {
 
   const userType = user.roleType.toLowerCase();
   const email = user.user.email;
-  return `<li class="userWrpper">
+  const id = user.user.id;
+
+  const userToRender = `<li  id="${id}" class="userWrpper">
   <div class="${userType}Status ${statusClass}">${status}</div>
   <div class="${userType}Email">${email}</div>
   <div class="${userType}ChangeRole"><i class="bi bi-arrow-down-up"></i></div>
   <div class="${userType}Remove"><i class="bi bi-trash"></i></div>
   </li>`;
+
+  if (userType == "admin") {
+    $(".field.admins div.listWrapper ul").append(userToRender);
+  } else if (userType == "guest") {
+    $(".field.guests div.listWrapper ul").append(userToRender);
+  }
 };
 
 export { initCalendar, cleanAddModalFields, eventClickHandler, renderUserinList };
