@@ -19,7 +19,7 @@ const initFullCal = () => {
 
     calendar = new Calendar(calendarEl, {
       plugins: [adaptivePlugin, interactionPlugin, dayGridPlugin, listPlugin, timeGridPlugin, resourceTimelinePlugin, momentPlugin],
-      timeZone:initialTimeZone,
+      timeZone: initialTimeZone,
       titleFormat: "MM/YYYY",
       schedulerLicenseKey: "XXX",
       now: sessionStorage.currentTime,
@@ -56,32 +56,12 @@ const initFullCal = () => {
         },
       },
       // timeZone: 'America/New_York',
-      
+
       eventClick: (info) => eventClickHandler(info),
     });
-   
+
     calendar.render();
   });
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 export { initFullCal, calendar };

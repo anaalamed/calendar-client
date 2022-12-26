@@ -20,15 +20,22 @@ i {
   cursor: pointer;
 }
 
-body.loggedin .navbar-nav .menuItems {
-  //  li.login,
-  li.signup {
-    display: none;
+body.loggedin header {
+  .navbar-nav .menuItems {
+    //  li.login,
+    li.signup {
+      display: none;
+    }
   }
 }
 
-body:not(.loggedin) .navbar-nav .menuItems {
-  li.settings {
+body:not(.loggedin) header {
+  .navbar-nav .menuItems {
+    li.settings {
+      display: none;
+    }  
+  }
+  .time, .city {
     display: none;
   }
 }
