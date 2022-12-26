@@ -20,6 +20,26 @@ i {
   cursor: pointer;
 }
 
+body.loggedin header {
+  .navbar-nav .menuItems {
+    //  li.login,
+    li.signup {
+      display: none;
+    }
+  }
+}
+
+body:not(.loggedin) header {
+  .navbar-nav .menuItems {
+    li.settings {
+      display: none;
+    }  
+  }
+  .time, .city {
+    display: none;
+  }
+}
+
 h1,
 h2 {
   text-align: center;

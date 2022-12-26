@@ -6,7 +6,6 @@ import $ from "jquery";
 
 var currentUserEvents = [];
 
-
 function time() {
   $("header .time").text(calcTime(sessionStorage.zoneDiff));
 }
@@ -37,16 +36,12 @@ const login = (user) => {
       sessionStorage.setItem("city", res.data.data.city);
       $("header .me .name").text("Hi, " + sessionStorage.currentUser);
       $("header .city").text(sessionStorage.city);
-
+      $("body").addClass("loggedin");
 
       updateZone(sessionStorage.city);
 
-
       await new Promise((r) => setTimeout(r, 2000));
       window.location.replace("http://localhost:9000/");
-
-
-
     })
     .catch((error) => {
       $(".modal-title").text("Log In failed");
@@ -78,7 +73,6 @@ function updateZone(city) {
   }
 }
 
-
 //calcTime
 function calcTime(offset) {
   // create Date object for current location
@@ -87,11 +81,11 @@ function calcTime(offset) {
   // convert to msec
   // subtract local time zone offset
   // get UTC time in msec
-  var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+  var utc = d.getTime() + d.getTimezoneOffset() * 60000;
 
   // create new Date object for different city
   // using supplied offset
-  var nd = new Date(utc + (3600000 * offset));
+  var nd = new Date(utc + 3600000 * offset);
   //ParseDateTime( nd.toLocaleString(), "yyyy-mm-ddThh:mm:ss");
   var nd2 = new Date(nd);
   nd2.setHours(nd.getHours());
@@ -100,15 +94,6 @@ function calcTime(offset) {
   // return time as a string
   return nd.toLocaleString();
 }
-
-
-
-
-
-
-
-
-
 
 const createUser = (user) => {
   const createUserFetchPromise = axios({
@@ -171,7 +156,26 @@ const loginGithub = (code) => {
 };
 
 // ------------------------ settings ----------------------------------
-// get notification settings - not implemented!
+// right implementation!
+const getSettings = async (city) => {
+  const getMySettings = axios({
+    method: "GET",
+    url: serverAddress + "/user/getNotificationSettings",
+    headers: {
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
+    },
+  })
+    .then((res) => {
+      // console.log(res.data);
+      return res;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  return await getMySettings;
+};
+
 const updateCity = (city) => {
   const updateLocation = axios({
     method: "PATCH",
@@ -279,33 +283,26 @@ const getAllEventsByUser = (userId) => {
       var updatedZone;
       var calcZone = sessionStorage.zone.split(":");
 
-      var h = parseInt(calcZone[0]*-1+parseInt("+04:00"));
-      if(h<0){
-        if(h>10){
-          updatedZone= "-"+h+":"+calcZone[1];
+      var h = parseInt(calcZone[0] * -1 + parseInt("+04:00"));
+      if (h < 0) {
+        if (h > 10) {
+          updatedZone = "-" + h + ":" + calcZone[1];
+        } else {
+          updatedZone = "-0" + h + ":" + calcZone[1];
         }
-        else{
-          updatedZone= "-0"+h+":"+calcZone[1];
-        }
-      }
-      else{
-        if(h>10){
-          updatedZone= "+"+h+":"+calcZone[1];
-        }
-        else{
-          updatedZone= "+0"+h+":"+calcZone[1];
+      } else {
+        if (h > 10) {
+          updatedZone = "+" + h + ":" + calcZone[1];
+        } else {
+          updatedZone = "+0" + h + ":" + calcZone[1];
         }
       }
 
       console.log(updatedZone);
 
-      myNewEvents[i].start = myNewEvents[i].time.split('+')[0] + updatedZone;
-
+      myNewEvents[i].start = myNewEvents[i].time.split("+")[0] + updatedZone;
 
       //--------------------------------------------------------
-
-
-
 
       myNewEvents[i].myDuration = myNewEvents[i].duration;
       var myHour = new Date(myNewEvents[i].start).getHours();
@@ -387,7 +384,7 @@ const saveNewEvent = (event, addGuests) => {
 };
 
 const updateEvent = (event, addGuests) => {
-  const FetchPromise = axios({
+  const update = axios({
     method: "PUT",
     url: serverAddress + "/event/updateEvent/event",
     headers: {
@@ -407,42 +404,106 @@ const updateEvent = (event, addGuests) => {
       public: event.public,
       user: [],
     },
-  });
+  })
+    .then(async (res) => {
+      console.log(res.data.data);
+      sessionStorage.setItem("currentEventId", res.data.data.id);
+      for (let i = 0; i < addGuests.length; i++) {
+        inviteGuest(addGuests[i]);
+        await new Promise((r) => setTimeout(r, 2000));
+      }
+      // location.reload();
+    })
+    .catch((error) => {
+      console.log(error.response.data.message);
+    });
+};
 
-  FetchPromise.then(async (res) => {
-    console.log(res.data.data);
-    sessionStorage.setItem("currentEventId", res.data.data.id);
-    for (let i = 0; i < addGuests.length; i++) {
-      inviteGuest(addGuests[i]);
-      await new Promise((r) => setTimeout(r, 2000));
-    }
+const deleteEvent = async (id) => {
+  const deleteE = axios({
+    method: "DELETE",
+    url: serverAddress + "/event/deleteEvent?eventId=" + sessionStorage.getItem("currentEventId"),
+    headers: {
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
+    },
+  })
+    .then((res) => {
+      console.log(res);
+      return res;
+    })
+    .catch((error) => {
+      console.log(error.response.data.message);
+    });
+  return await deleteE;
+};
 
-    // add to fullCalendar
-    // calendar.addEvent({
-    //   title: $("#editModalTitle").val(),
-    //   start: $("#date").val() + "T" + $("#time").val(),
-    //   end: "2022-12-19T20:00:00",
-    //   extendedProps: {
-    //     public: $("#checkbox").is(":checked"),
-    //     location: $("#location").val(),
-    //     organizer: sessionStorage.getItem("currentUser"),
-    //     duration: $("#duration").val(),
-    //   },
-    //   description: $("#description").val(),
-    // });
+const hideEvent = async (id) => {
+  const hide = axios({
+    method: "PATCH",
+    url: serverAddress + "/event/leaveEvent?eventId=" + sessionStorage.getItem("currentEventId"),
+    headers: {
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
+    },
+  })
+    .then((res) => {
+      console.log(res);
+      return res;
+    })
+    .catch((error) => {
+      console.log(error.response.data.message);
+    });
+  return await hide;
+};
 
-    // event.user.push(myGuest);
-    location.reload();
-  }).catch((error) => {
-    console.log(error.response.data.message);
-  });
+const switchStatus = async (isArrive) => {
+  const switchS = axios({
+    method: "PATCH",
+    url: serverAddress + "/event/switchStatus?eventId=" + sessionStorage.getItem("currentEventId"),
+    headers: {
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
+    },
+    params: {
+      booleanValue: isArrive,
+    },
+  })
+    .then((res) => {
+      console.log(res);
+      return res;
+    })
+    .catch((error) => {
+      console.log(error.response.data.message);
+    });
+  return await switchS;
 };
 
 // ------------------------ roles ----------------------------------
 // switch role - not implemented!
 
-const inviteGuest = (email) => {
-  const FetchPromise = axios({
+const switchRole = async (id) => {
+  const switchR = axios({
+    method: "PATCH",
+    url: serverAddress + "/event/switchRole?eventId=" + sessionStorage.getItem("currentEventId"),
+    headers: {
+      "Content-Type": "application/json",
+      token: sessionStorage.getItem("token"),
+    },
+    data: id,
+  })
+    .then((res) => {
+      console.log(res);
+      return res;
+    })
+    .catch((error) => {
+      console.log(error.response.data.message);
+    });
+  return await switchR;
+};
+
+const inviteGuest = async (email) => {
+  const invite = axios({
     method: "POST",
     url: serverAddress + "/event/inviteGuest?eventId=" + sessionStorage.getItem("currentEventId") + "&email=" + email, // Will need to change to eventId later!!!!~~~~~~
     headers: {
@@ -450,20 +511,19 @@ const inviteGuest = (email) => {
       token: sessionStorage.getItem("token"),
     },
     data: {},
-  });
-
-  FetchPromise.then((res) => {
-    const user = res.data.data;
-    console.log(user);
-    $(".field.guests div.listWrapper ul").append(renderUserinList(user));
-    return user;
-  }).catch((error) => {
-    console.log(error.response.data.message);
-  });
+  })
+    .then((res) => {
+      // console.log(res);
+      return res;
+    })
+    .catch((error) => {
+      console.log(error.response.data.message);
+    });
+  return await invite;
 };
 
-const removeGuest = (email) => {
-  const FetchPromise = axios({
+const removeGuest = async (email) => {
+  const remove = axios({
     method: "DELETE",
     url: serverAddress + "/event/removeGuest?eventId=" + sessionStorage.getItem("currentEventId") + "&email=" + email,
     headers: {
@@ -471,14 +531,16 @@ const removeGuest = (email) => {
       token: sessionStorage.getItem("token"),
     },
     data: {},
-  });
-
-  FetchPromise.then((res) => {
-    console.log(res.data.data);
-    return true;
-  }).catch((error) => {
-    console.log(error.response.data.message);
-  });
+  })
+    .then((res) => {
+      console.log(res.data.data);
+      return true;
+    })
+    .catch((error) => {
+      console.log(error.response.data.message);
+      return false;
+    });
+  return await remove;
 };
 
-export { updateEvent, createUser, login, loginGithub, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest, updateCity, updateNotificationsSettings };
+export { updateEvent, createUser, login, loginGithub, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest, updateCity, updateNotificationsSettings, getSettings, switchRole, deleteEvent, hideEvent, switchStatus };

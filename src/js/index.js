@@ -10,9 +10,11 @@ $(() => {
   openConnection();
 
   $(document).ready(function () {
-    if (sessionStorage.length > 0) {
+    if (sessionStorage.length > 1) {
+      // currentTime
       $("header .me .name").text("Hi, " + sessionStorage.currentUser);
       $("header .city").text(sessionStorage.city);
+      $("body").addClass("loggedin");
     }
   });
 });

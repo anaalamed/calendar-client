@@ -54,8 +54,8 @@ const urlRoutes = {
       initLogin();
     },
   },
-  //"/calendar": {
-     "/": {
+  "/calendar": {
+    //  "/": {
     template: "pages/calendar.html",
     title: "My Calendar | " + urlPageTitle,
     description: "This is the calendar page",
