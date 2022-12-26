@@ -18,13 +18,13 @@ const initFullCal = () => {
     let calendarEl = document.getElementById("calendar");
 
     calendar = new Calendar(calendarEl, {
-      timeZone:initialTimeZone,
       plugins: [adaptivePlugin, interactionPlugin, dayGridPlugin, listPlugin, timeGridPlugin, resourceTimelinePlugin, momentPlugin],
+      timeZone:initialTimeZone,
       titleFormat: "MM/YYYY",
       schedulerLicenseKey: "XXX",
-      now: momentPlugin.now,
+      now: sessionStorage.currentTime,
       allDaySlot: false,
-      slotDuration: "01:00:00",
+      slotDuration: "00:30:00",
       editable: true, // enable draggable events
       aspectRatio: 1.8,
       scrollTime: "00:00", // undo default 6am scrollTime
@@ -56,7 +56,7 @@ const initFullCal = () => {
         },
       },
       // timeZone: 'America/New_York',
-
+      
       eventClick: (info) => eventClickHandler(info),
     });
    

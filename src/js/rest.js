@@ -7,10 +7,10 @@ import $ from "jquery";
 var currentUserEvents = [];
 
 
-function time(){
+function time() {
   $("header .time").text(calcTime(sessionStorage.zoneDiff));
 }
-setInterval(time,1000);
+setInterval(time, 1000);
 
 // ------------------------ auth ----------------------------------
 const login = (user) => {
@@ -37,10 +37,10 @@ const login = (user) => {
       sessionStorage.setItem("city", res.data.data.city);
       $("header .me .name").text("Hi, " + sessionStorage.currentUser);
       $("header .city").text(sessionStorage.city);
-      
+
 
       updateZone(sessionStorage.city);
- 
+
 
       await new Promise((r) => setTimeout(r, 2000));
       window.location.replace("http://localhost:9000/");
@@ -54,7 +54,7 @@ const login = (user) => {
     });
 };
 
-function updateZone(city){
+function updateZone(city) {
   switch (city) {
     case "JERUSALEM":
       sessionStorage.setItem("zone", "+02:00");
@@ -91,7 +91,11 @@ function calcTime(offset) {
 
   // create new Date object for different city
   // using supplied offset
-  var nd = new Date(utc + (3600000*offset));
+  var nd = new Date(utc + (3600000 * offset));
+  //ParseDateTime( nd.toLocaleString(), "yyyy-mm-ddThh:mm:ss");
+  var nd2 = new Date(nd);
+  nd2.setHours(nd.getHours());
+  sessionStorage.setItem("currentTime", nd2.toJSON());
 
   // return time as a string
   return nd.toLocaleString();
@@ -270,12 +274,44 @@ const getAllEventsByUser = (userId) => {
     myNewEvents = res.data.data;
 
     for (let i = 0; i < res.data.data.length; i++) {
-      myNewEvents[i].start = myNewEvents[i].time;
+      //research of mostfa and leon DON'T TOUCH OR CHANGE IT
+      //--------------------------------------------------------
+      var updatedZone;
+      var calcZone = sessionStorage.zone.split(":");
+
+      var h = parseInt(calcZone[0]*-1+parseInt("+04:00"));
+      if(h<0){
+        if(h>10){
+          updatedZone= "-"+h+":"+calcZone[1];
+        }
+        else{
+          updatedZone= "-0"+h+":"+calcZone[1];
+        }
+      }
+      else{
+        if(h>10){
+          updatedZone= "+"+h+":"+calcZone[1];
+        }
+        else{
+          updatedZone= "+0"+h+":"+calcZone[1];
+        }
+      }
+
+      console.log(updatedZone);
+
+      myNewEvents[i].start = myNewEvents[i].time.split('+')[0] + updatedZone;
+
+
+      //--------------------------------------------------------
+
+
+
+
       myNewEvents[i].myDuration = myNewEvents[i].duration;
-      var myHour = new Date(myNewEvents[i].time).getHours();
-      var myMin = new Date(myNewEvents[i].time).getMinutes();
+      var myHour = new Date(myNewEvents[i].start).getHours();
+      var myMin = new Date(myNewEvents[i].start).getMinutes();
       var myDuration2 = myNewEvents[i].duration;
-      var calEnd = new Date(myNewEvents[i].time).setHours(myHour + myDuration2, (myHour + myDuration2 - (myHour + parseInt(myDuration2))) * 60 + myMin);
+      var calEnd = new Date(myNewEvents[i].start).setHours(myHour + myDuration2, (myHour + myDuration2 - (myHour + parseInt(myDuration2))) * 60 + myMin);
 
       myNewEvents[i].end = calEnd;
       myNewEvents[i].resourceId = sessionStorage.getItem("userId");
