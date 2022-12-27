@@ -4,7 +4,7 @@ import { serverAddress } from "../constants";
 import { updateZone } from "../utils";
 import { clientAddres } from "../constants";
 
-const createUser = (user) => {
+const createUser = async (user) => {
   const createUserFetchPromise = axios({
     method: "post",
     url: serverAddress + "/auth/signup",
@@ -16,24 +16,17 @@ const createUser = (user) => {
       name: user.name,
       password: user.password,
     },
-  });
-
-  createUserFetchPromise
+  })
     .then((res) => {
-      $(".modal-title").text("Registration success");
-      $(".modal-body").text("Registration successfull!");
-
-      $(document).on("click", "#responseModalCloseBtn", function (event) {
-        window.location.replace(`${clientAddres}`);
-      });
+      return res;
     })
     .catch((error) => {
-      $(".modal-title").text("Registration failed");
-      $(".modal-body").text(error.response.data.message);
+      return error;
     });
+  return createUserFetchPromise;
 };
 
-const login = (user) => {
+const login = async (user) => {
   const loginFetchPromise = axios({
     method: "post",
     url: serverAddress + "/auth/login",
@@ -44,33 +37,18 @@ const login = (user) => {
       email: user.email,
       password: user.password,
     },
-  });
-
-  loginFetchPromise
-    .then(async (res) => {
-      $(".modal-title").text("Log In success");
-      $(".modal-body").text("Log In successfull!");
-
-      sessionStorage.setItem("userId", res.data.data.userId);
-      sessionStorage.setItem("token", res.data.data.token);
-      sessionStorage.setItem("currentUser", res.data.data.name);
-      sessionStorage.setItem("city", res.data.data.city);
-      $("header .me .name").text("Hi, " + sessionStorage.currentUser);
-      $("header .city").text(sessionStorage.city);
-      $("body").addClass("loggedin");
-
-      updateZone(sessionStorage.city);
-
-      await new Promise((r) => setTimeout(r, 2000));
-      window.location.replace(`${clientAddres}`);
+  })
+    .then((res) => {
+      return res;
     })
     .catch((error) => {
-      $(".modal-title").text("Log In failed");
-      $(".modal-body").text(error.response.data.message);
+      console.log(error);
+      return error;
     });
+  return loginFetchPromise;
 };
 
-const loginGithub = (code) => {
+const loginGithub = async (code) => {
   const loginGithubFetchPromise = axios({
     method: "post",
     url: serverAddress + "/auth/loginGithub",
@@ -86,19 +64,14 @@ const loginGithub = (code) => {
       sessionStorage.setItem("token", res.data.data.token);
       sessionStorage.setItem("currentUser", res.data.data.name);
       $("header .me .name").text("Hi, " + res.data.data.name);
-
-      window.history.pushState({}, document.title, "/");
       console.log("booom");
-
-      // $("#modalResponse").modal("show");
-      // $(".modal-title").text("Log In success");
-      // $(".modal-body").text("Log In with Github successfull!");
+      return res;
     })
     .catch((error) => {
-      $(".modal-title").text("Log In failed");
-      $(".modal-body").text("Log In with Github failed");
+      console.log(error);
+      return res;
     });
-  loginGithubFetchPromise();
+  return loginGithubFetchPromise;
 };
 
 export { createUser, login, loginGithub };

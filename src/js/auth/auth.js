@@ -1,6 +1,7 @@
 import $ from "jquery";
 import { createUser, login, loginGithub } from "./rest";
 import { clientAddres } from "../constants";
+import { updateZone } from "../utils";
 
 const initRegistration = () => {
   console.log("init registration ");
@@ -12,7 +13,7 @@ const initRegistration = () => {
       // remove previous eventHandker
     });
 
-  $(document).on("click", "body.signup #btnSignup", (event) => {
+  $(document).on("click", "body.signup #btnSignup", async (event) => {
     console.log("registration");
     event.preventDefault();
 
@@ -23,7 +24,20 @@ const initRegistration = () => {
     };
 
     console.log(user);
-    createUser(user);
+    const res = await createUser(user);
+    console.log(res);
+
+    if (res.status == 200) {
+      $(".modal-title").text("Registration");
+      $(".modal-body").text("Registration successfull!");
+
+      $(document).on("click", "#responseModalCloseBtn", function (event) {
+        window.location.replace(`${clientAddres}/login`);
+      });
+    } else {
+      $(".modal-title").text("Registration failed");
+      $(".modal-body").text(res.response.data.message);
+    }
   });
 
   $(document).on("click", "body.signup #responseModalCloseBtn", function (event) {
@@ -41,7 +55,7 @@ const initLogin = () => {
       // remove previous eventHandker
     });
 
-  $(document).on("click", "#btnLogin", function (event) {
+  $(document).on("click", "#btnLogin", async function (event) {
     console.log("login");
     event.preventDefault();
 
@@ -52,11 +66,31 @@ const initLogin = () => {
     const email = $(".form-floating #email").val();
     const password = $(".form-floating #password").val();
 
-    console.log(user);
-    login(user);
+    const res = await login(user);
+    console.log(res);
+
+    if (res.status == 200) {
+      $(".modal-title").text("Log In success");
+      $(".modal-body").text("Log In successfull!");
+
+      sessionStorage.setItem("userId", res.data.data.userId);
+      sessionStorage.setItem("token", res.data.data.token);
+      sessionStorage.setItem("currentUser", res.data.data.name);
+      sessionStorage.setItem("city", res.data.data.city);
+      $("header .me .name").text("Hi, " + sessionStorage.currentUser);
+      $("header .city").text(sessionStorage.city);
+      $("body").addClass("loggedin");
+
+      updateZone(sessionStorage.city);
+      await new Promise((r) => setTimeout(r, 2000));
+      window.location.replace(`${clientAddres}/calendar`);
+    } else {
+      $(".modal-title").text("Log In failed");
+      $(".modal-body").text(res.response.data.message);
+    }
   });
 
-  $(document).on("click", "body.login #responseModalCloseBtn", function (event) {
+  $(document).on("click", "body.login.loggedin #responseModalCloseBtn", function (event) {
     window.location.replace(`${clientAddres}/calendar`);
   });
 };
@@ -73,10 +107,31 @@ const initGithub = async () => {
     const code = url.searchParams.get("code");
     console.log(code);
 
-    loginGithub(code);
-  }
+    const res = await loginGithub(code);
+    console.log(res);
 
-  // take a code from url and ro req to auth/loginGithub?code=...
+    if (res.status == 200) {
+      alert("github success");
+
+      sessionStorage.setItem("userId", res.data.data.userId);
+      sessionStorage.setItem("token", res.data.data.token);
+      sessionStorage.setItem("currentUser", res.data.data.name);
+      sessionStorage.setItem("city", res.data.data.city);
+      $("header .me .name").text("Hi, " + sessionStorage.currentUser);
+      $("header .city").text(sessionStorage.city);
+      $("body").addClass("loggedin");
+
+      updateZone(sessionStorage.city);
+      // $("#modalResponse").modal("show");
+      // $(".modal-title").text("Log In Github");
+      // $(".modal-body").text("Log In with Github successfull!");
+    } else {
+      alert("github fail");
+      // $("#modalResponse").modal("show");
+      // $(".modal-title").text("Log In Github");
+      // $(".modal-body").text("Log In with Github failed!");
+    }
+  }
 };
 
 export { initLogin, initRegistration, initGithub };
