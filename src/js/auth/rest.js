@@ -2,6 +2,7 @@ import axios from "axios";
 import $ from "jquery";
 import { serverAddress } from "../constants";
 import { updateZone } from "../utils";
+import { clientAddres } from "../constants";
 
 const createUser = (user) => {
   const createUserFetchPromise = axios({
@@ -22,8 +23,8 @@ const createUser = (user) => {
       $(".modal-title").text("Registration success");
       $(".modal-body").text("Registration successfull!");
 
-      $(document).on("click", "#signUpCloseBtn", function (event) {
-        window.location.replace("http://localhost:9000/");
+      $(document).on("click", "#responseModalCloseBtn", function (event) {
+        window.location.replace(`${clientAddres}`);
       });
     })
     .catch((error) => {
@@ -61,7 +62,7 @@ const login = (user) => {
       updateZone(sessionStorage.city);
 
       await new Promise((r) => setTimeout(r, 2000));
-      window.location.replace("http://localhost:9000/");
+      window.location.replace(`${clientAddres}`);
     })
     .catch((error) => {
       $(".modal-title").text("Log In failed");
