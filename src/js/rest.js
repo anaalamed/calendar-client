@@ -4,13 +4,12 @@ import { serverAddress } from "./constants";
 import { calendar } from "../js/calendar/fullCalendar";
 import { adaptEventsToFullCalendar } from "../js/utils";
 
-// calendar.refetchEvents() ------- !
-
 // ------------------------ events ----------------------------------
 const getAllEventsByUser = (userId) => {
   const FetchPromise = axios({
     method: "GET",
-    url: serverAddress + "/event/getEventsByUserId",
+    url: serverAddress + "/event/getEventsByUserIdShowOnly",
+    // url: serverAddress + "/event/getEventsByUserId",
     headers: {
       "Content-Type": "application/json",
       token: sessionStorage.getItem("token"),
@@ -19,8 +18,9 @@ const getAllEventsByUser = (userId) => {
   });
   // var myNewEvents;
   FetchPromise.then((res) => {
+    console.log(res.data.data);
     const events = adaptEventsToFullCalendar(res.data.data);
-    // console.log(events);
+    console.log(events);
     calendar.addEventSource(events);
   }).catch((error) => {
     console.log(error);

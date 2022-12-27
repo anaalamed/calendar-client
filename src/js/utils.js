@@ -102,6 +102,13 @@ const adaptEventsToFullCalendar = (events) => {
     }
 
     myNewEvents[i].start = myNewEvents[i].time.split("+")[0] + updatedZone;
+    if (isNaN(new Date(myNewEvents[i].start).getHours())) {
+      let array = myNewEvents[i].time.split("-");
+      array.pop();
+      const newArray = array.join("-");
+      console.log(newArray);
+      myNewEvents[i].start = newArray + updatedZone;
+    }
 
     //--------------------------------------------------------
 
@@ -122,11 +129,11 @@ const adaptEventsToFullCalendar = (events) => {
       }
     });
 
-    // if (myNewEvents[i].resourceId == sessionStorage.getItem("userId")) {
-    //   console.log("booom");
-    //   console.log(myNewEvents[i]);
-    //   $(".fc-event").css("background-color", "#D7CDD5").addClass(sessionStorage.getItem("userId"));
-    // }
+    if (myNewEvents[i].resourceId == sessionStorage.getItem("userId")) {
+      console.log("booom");
+      console.log(myNewEvents[i]);
+      $(".fc-event").css("background-color", "#D7CDD5").addClass(sessionStorage.getItem("userId"));
+    }
   }
 
   // //ADDED class equals to orginaizerid
