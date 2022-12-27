@@ -75,4 +75,69 @@ const cleanAddModalFields = () => {
   $("#description").val("");
 };
 
-export { updateZone, renderUserinList, cleanAddModalFields };
+const adaptEventsToFullCalendar = (events) => {
+  console.log("in adaptEventsToFullCalendar");
+
+  let myNewEvents = events;
+
+  for (let i = 0; i < events.length; i++) {
+    //research of mostfa and leon DON'T TOUCH OR CHANGE IT
+    //--------------------------------------------------------
+    var updatedZone;
+    var calcZone = sessionStorage.zone.split(":");
+
+    var h = parseInt(calcZone[0] * -1 + parseInt("+04:00"));
+    if (h < 0) {
+      if (h > 10) {
+        updatedZone = "-" + h + ":" + calcZone[1];
+      } else {
+        updatedZone = "-0" + h + ":" + calcZone[1];
+      }
+    } else {
+      if (h > 10) {
+        updatedZone = "+" + h + ":" + calcZone[1];
+      } else {
+        updatedZone = "+0" + h + ":" + calcZone[1];
+      }
+    }
+
+    myNewEvents[i].start = myNewEvents[i].time.split("+")[0] + updatedZone;
+
+    //--------------------------------------------------------
+
+    myNewEvents[i].myDuration = myNewEvents[i].duration;
+    var myHour = new Date(myNewEvents[i].start).getHours();
+    var myMin = new Date(myNewEvents[i].start).getMinutes();
+    var myDuration2 = myNewEvents[i].duration;
+    var calEnd = new Date(myNewEvents[i].start).setHours(myHour + myDuration2, (myHour + myDuration2 - (myHour + parseInt(myDuration2))) * 60 + myMin);
+
+    myNewEvents[i].end = calEnd;
+    myNewEvents[i].resourceId = sessionStorage.getItem("userId");
+
+    const roles = myNewEvents[i].roles;
+    roles.forEach((role) => {
+      if (role.user.id == sessionStorage.getItem("userId")) {
+        console.log("me!");
+        myNewEvents[i].resourceId = "me";
+      }
+    });
+
+    // if (myNewEvents[i].resourceId == sessionStorage.getItem("userId")) {
+    //   console.log("booom");
+    //   console.log(myNewEvents[i]);
+    //   $(".fc-event").css("background-color", "#D7CDD5").addClass(sessionStorage.getItem("userId"));
+    // }
+  }
+
+  // //ADDED class equals to orginaizerid
+  // for (let i = 0; i < res.data.data.length; i++) {
+  //   if (myNewEvents[i].resourceId == sessionStorage.getItem("userId")) {
+  //     $(".fc-event").css("background-color", "#D7CDD5").addClass(sessionStorage.getItem("userId"));
+  //     console.log(myNewEvents[i].resourceId);
+  //   }
+  // }
+
+  return myNewEvents;
+};
+
+export { updateZone, renderUserinList, cleanAddModalFields, adaptEventsToFullCalendar };

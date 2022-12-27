@@ -37,7 +37,6 @@ body.loggedin header {
   .modal-footer-buttons #hide {
         display: none;
     }
-
 }
 
 #eventModal.guest  {
@@ -45,4 +44,23 @@ body.loggedin header {
   #editEventButton {
     display: none;
   }
+}
+
+#eventModal:not(.myEvent) {
+  .modal-content {
+    background-image: none;
+    background-color: rgb(163, 155, 155);
+  }
+
+  .modal-footer-buttons .arrive, 
+  .modal-footer-buttons #hide {
+      display: none;
+  }
+
+  .users .row.addGuest,
+  #editEventButton,
+  #deleteEventButton {
+    display: none;
+  }
+
 }
