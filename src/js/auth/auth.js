@@ -1,9 +1,10 @@
 import $ from "jquery";
 import { createUser, login, loginGithub } from "./rest";
+import { clientAddres } from "../constants";
 
 const initRegistration = () => {
   console.log("init registration ");
-  // -------------------- registration -------------------------------
+  $("body").addClass("signup");
 
   $(document)
     .off("click")
@@ -11,7 +12,7 @@ const initRegistration = () => {
       // remove previous eventHandker
     });
 
-  $(document).on("click", "#btnSignup", (event) => {
+  $(document).on("click", "body.signup #btnSignup", (event) => {
     console.log("registration");
     event.preventDefault();
 
@@ -24,11 +25,15 @@ const initRegistration = () => {
     console.log(user);
     createUser(user);
   });
+
+  $(document).on("click", "body.signup #responseModalCloseBtn", function (event) {
+    window.location.replace(`${clientAddres}/login`);
+  });
 };
 
 const initLogin = () => {
   console.log("init login");
-  // -------------------- login -------------------------------
+  $("body").addClass("login");
 
   $(document)
     .off("click")
@@ -51,8 +56,8 @@ const initLogin = () => {
     login(user);
   });
 
-  $(document).on("click", "#loginCloseBtn", function (event) {
-    //window.location.replace("http://localhost:9000/calendar");
+  $(document).on("click", "body.login #responseModalCloseBtn", function (event) {
+    window.location.replace(`${clientAddres}/calendar`);
   });
 };
 
