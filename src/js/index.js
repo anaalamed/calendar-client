@@ -19,10 +19,10 @@ $(() => {
   });
 });
 
-// function time() {
-//   $("header .time").text(calcTime(sessionStorage.zoneDiff));
-// }
-// setInterval(time, 1000);
+function time() {
+  $("header .time").text(calcTime(sessionStorage.zoneDiff));
+}
+setInterval(time, 1000);
 
 function calcTime(offset) {
   // create Date object for current location

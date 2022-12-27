@@ -1,4 +1,3 @@
-import { data } from "jquery";
 import { updateEvent, getAllEventsByUser, inviteGuest, saveNewEvent, removeGuest, switchRole, deleteEvent, hideEvent, switchStatus } from "../rest";
 import { calendar } from "./fullCalendar";
 import pubSub from "./pubsub";
@@ -179,8 +178,10 @@ const initCalendar = () => {
       location: $("#location").val(),
       description: $("#description").val(),
       organizer: sessionStorage.getItem("currentUser"),
-      public: $("#checkbox").is(":checked"),
+      public: $(".public #checkbox").is(":checked"),
     };
+
+    console.log(eventToAdd);
 
     updateEvent(eventToAdd, addGuests);
     // need to add if success...

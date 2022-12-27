@@ -29,20 +29,18 @@ const initRegistration = () => {
     console.log(res);
 
     if (res.status == 200) {
+      // $("#modalResponse").modal("show");
       $(".modal-title").text("Registration");
       $(".modal-body").text("Registration successfull!");
 
-      $(document).on("click", "#responseModalCloseBtn", function (event) {
+      $(document).on("click", "body.signup #responseModalCloseBtn", function (event) {
         window.location.replace(`${clientAddres}/login`);
       });
     } else {
+      // $("#modalResponse").modal("show");
       $(".modal-title").text("Registration failed");
       $(".modal-body").text(res.response.data.message);
     }
-  });
-
-  $(document).on("click", "body.signup #responseModalCloseBtn", function (event) {
-    window.location.replace(`${clientAddres}/login`);
   });
 };
 
@@ -71,6 +69,7 @@ const initLogin = () => {
     console.log(res);
 
     if (res.status == 200) {
+      // $("#modalResponse").modal("show");
       $(".modal-title").text("Log In success");
       $(".modal-body").text("Log In successfull!");
 
@@ -88,6 +87,7 @@ const initLogin = () => {
       await new Promise((r) => setTimeout(r, 2000));
       window.location.replace(`${clientAddres}/calendar`);
     } else {
+      // $("#modalResponse").modal("show");
       $(".modal-title").text("Log In failed");
       $(".modal-body").text(res.response.data.message);
     }
