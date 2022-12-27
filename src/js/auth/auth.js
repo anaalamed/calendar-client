@@ -2,6 +2,7 @@ import $ from "jquery";
 import { createUser, login, loginGithub } from "./rest";
 import { clientAddres } from "../constants";
 import { updateZone } from "../utils";
+import { openConnection } from "../sockets";
 
 const initRegistration = () => {
   console.log("init registration ");
@@ -77,11 +78,13 @@ const initLogin = () => {
       sessionStorage.setItem("token", res.data.data.token);
       sessionStorage.setItem("currentUser", res.data.data.name);
       sessionStorage.setItem("city", res.data.data.city);
+      sessionStorage.setItem("email", res.data.data.email);
       $("header .me .name").text("Hi, " + sessionStorage.currentUser);
       $("header .city").text(sessionStorage.city);
       $("body").addClass("loggedin");
 
       updateZone(sessionStorage.city);
+      openConnection();
       await new Promise((r) => setTimeout(r, 2000));
       window.location.replace(`${clientAddres}/calendar`);
     } else {
@@ -117,11 +120,13 @@ const initGithub = async () => {
       sessionStorage.setItem("token", res.data.data.token);
       sessionStorage.setItem("currentUser", res.data.data.name);
       sessionStorage.setItem("city", res.data.data.city);
+      sessionStorage.setItem("email", res.data.data.email);
       $("header .me .name").text("Hi, " + sessionStorage.currentUser);
       $("header .city").text(sessionStorage.city);
       $("body").addClass("loggedin");
 
       updateZone(sessionStorage.city);
+      openConnection();
       // $("#modalResponse").modal("show");
       // $(".modal-title").text("Log In Github");
       // $(".modal-body").text("Log In with Github successfull!");

@@ -36,7 +36,7 @@ const eventClickHandler = (info) => {
   $("#eventModal").modal("show");
   $("#eventModal").attr("event-id", eventId);
   $(".modal-title").text(info.event._def.title);
-  $(".row.field.public .content").text(info.event.extendedProps.public);
+  $(".row.field.public #checkbox").prop("checked", info.event._def.extendedProps.public);
   $(".row.field.time .content").text(info.event.start.getHours() + ":" + info.event.start.getMinutes());
   $(".row.field.date .content").text(info.event.start.getFullYear() + "-" + (info.event.start.getMonth() + 1) + "-" + info.event.start.getDate());
   $(".row.field.duration .content").text(info.event.extendedProps.myDuration + " (Hours)");

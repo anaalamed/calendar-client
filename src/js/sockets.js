@@ -28,7 +28,7 @@ const onMessageReceived = (payload) => {
 
 const onConnected = () => {
   console.log("---- onConnected ----");
-  stompClient.subscribe("/notifications", onMessageReceived);
+  stompClient.subscribe("/notifications/" + sessionStorage.getItem("email"), onMessageReceived);
   // stompClient.send("/app/hello", [], JSON.stringify({ name: "Default user" }));
 };
 

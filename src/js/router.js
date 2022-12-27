@@ -3,7 +3,7 @@ import { initSideCalendar } from "./calendar/sideCalendar";
 import { initFullCal } from "./calendar/fullCalendar";
 import { initHomePage } from "./home/home";
 import { initCalendar } from "./calendar/calendar";
-import { initShare } from "./calendar/share";
+import { initShare } from "./share/share";
 import { initSettings } from "./settings/settings";
 
 const initRouter = async () => {

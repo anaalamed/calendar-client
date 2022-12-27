@@ -1,25 +1,37 @@
 <div class="cal_view_wrapper">
   <div class="side_wrapper">
     <div class="calendar_wrapper">
-      <div class="side_cal_header">
-        <p class="current-date"></p>
-        <div class="icons">
-          <i id="prev" class="bi bi-arrow-left"></i>
-          <i id="next" class="bi bi-arrow-right"></i>
+      <div>
+        <div class="side_cal_header">
+          <p class="current-date"></p>
+          <div class="icons">
+            <i id="prev" class="bi bi-arrow-left"></i>
+            <i id="next" class="bi bi-arrow-right"></i>
+          </div>
+        </div>
+        <div class="calendar">
+          <ul class="weeks">
+            <li>S</li>
+            <li>M</li>
+            <li>T</li>
+            <li>W</li>
+            <li>T</li>
+            <li>F</li>
+            <li>S</li>
+          </ul>
+          <ul class="days"></ul>
         </div>
       </div>
-      <div class="calendar">
-        <ul class="weeks">
-          <li>S</li>
-          <li>M</li>
-          <li>T</li>
-          <li>W</li>
-          <li>T</li>
-          <li>F</li>
-          <li>S</li>
-        </ul>
-        <ul class="days"></ul>
+
+      <div class="shareWrapper">
+        <div class="sharedWithMe">
+          <h4>Shared with me</h4>
+          <ul class="listShared"></ul>
+          <div class="getShared">Show</div>
+        </div>
       </div>
+
+      <div class="shareBtn">Share my calendar with...</div>
     </div>
   </div>
 
@@ -48,8 +60,10 @@
             <div class="data">
               <div class="row field public">
                 <div class="col-md-4">Public?</div>
-                <div class="col-md-2 content">yes</div>
+                <input id="checkbox" type="checkbox" name="public" value="public" disabled class="col-md-2" />
+                <label id="Ischecked" class="col-md-4"></label>
               </div>
+
               <div class="row field time">
                 <div class="col-md-4">Time:</div>
                 <div class="col-md-6 mx-auto content"></div>
@@ -70,10 +84,10 @@
                 <div class="col-md-4">Description:</div>
                 <div class="col-md-8 content bg">Tommorow Argentina Wins</div>
               </div>
-              <div class="field attachments">
+              <!-- <div class="field attachments">
                 <div class="col-md-4">Attachments:</div>
                 <div class="col-md-8 content"></div>
-              </div>
+              </div> -->
             </div>
 
             <div class="users">
