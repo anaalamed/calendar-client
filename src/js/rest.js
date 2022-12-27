@@ -213,7 +213,7 @@ const updateEvent = (event, addGuests) => {
         inviteGuest(addGuests[i]);
         await new Promise((r) => setTimeout(r, 2000));
       }
-      // location.reload();
+      location.reload();
     })
     .catch((error) => {
       console.log(error.response.data.message);
