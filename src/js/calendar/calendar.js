@@ -12,7 +12,7 @@ var guests = [];
 
 // click on the event
 const eventClickHandler = (info) => {
-  $("#eventModal").removeClass("admin organizer guest");
+  $("#eventModal").removeClass("admin organizer guest myEvent");
   admins = [];
   guests = [];
 
@@ -65,6 +65,11 @@ const eventClickHandler = (info) => {
 
   if (sessionStorage.userId == organizer.id) {
     $("#eventModal").addClass("organizer");
+  }
+
+  if (info.event._def.resourceIds.includes("me")) {
+    console.log("aaaaaaa");
+    $("#eventModal").addClass("myEvent");
   }
 };
 
@@ -189,6 +194,8 @@ const initCalendar = () => {
     calendarEvent.setExtendedProp("location", eventToAdd.location);
     calendarEvent.setExtendedProp("guests", eventToAdd.g);
     calendarEvent.setExtendedProp("duration", eventToAdd.duration);
+
+    // calendar.refetchEvents();
   });
 
   //switch role

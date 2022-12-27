@@ -24,7 +24,7 @@ const initFullCal = () => {
       schedulerLicenseKey: "XXX",
       now: sessionStorage.currentTime,
       allDaySlot: false,
-      slotDuration: "00:30:00",
+      slotDuration: "01:00:00",
       editable: true, // enable draggable events
       aspectRatio: 1.8,
       scrollTime: "00:00", // undo default 6am scrollTime

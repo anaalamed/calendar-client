@@ -1,5 +1,6 @@
 import { shareWithUser, getUsersSharedWithMe, getEventsSharedWithMe } from "./rest";
 import { calendar } from "../calendar/fullCalendar";
+import { adaptEventsToFullCalendar } from "../utils";
 
 const initShare = async () => {
   // Create me at the top of shared users list
@@ -8,12 +9,9 @@ const initShare = async () => {
 
   // get users shared with me
   const res = await getUsersSharedWithMe();
-  console.log(res);
 
   if (res.status == 200) {
     const users = res.data.data;
-    console.log("-------------- aaaa ------------");
-    console.log(users);
 
     users.forEach((user) => {
       $(".side_wrapper .sharedWithMe .listShared").append(renderSharedWithMe(user.id, user.email));
@@ -47,13 +45,18 @@ const initShare = async () => {
     event.preventDefault();
 
     const emails = getChoosenUsers();
-    console.log(emails);
     const res = await getEventsSharedWithMe(emails);
-    console.log(res);
     const events = res.data.data;
     console.log(events);
-    calendar.addEventSource(events);
-    console.log("rendered");
+    const adaptedEvents = adaptEventsToFullCalendar(events);
+
+    // remove previous events from calendar
+    const sources = calendar.getEventSources();
+    sources.forEach((source) => {
+      source.remove();
+    });
+
+    calendar.addEventSource(adaptedEvents);
   });
 
   // Click handler
