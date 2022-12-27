@@ -6,13 +6,13 @@ import listPlugin from "@fullcalendar/list";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import momentPlugin from "@fullcalendar/moment";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
-import { cleanAddModalFields, eventClickHandler } from "./calendar";
+import { eventClickHandler } from "./calendar";
+import { cleanAddModalFields } from "../utils";
+
 var initialTimeZone = "local";
 let calendar;
 const initFullCal = () => {
   console.log("initFullCal");
-  // $("#eventEditModal").modal("show"); // modal debug
-  // $("#eventModal").modal("show"); // modal debug
 
   $(document).ready(function () {
     let calendarEl = document.getElementById("calendar");
