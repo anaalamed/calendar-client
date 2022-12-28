@@ -102,7 +102,7 @@ const initCalendar = () => {
       location: $("#location").val(),
       description: $("#description").val(),
       organizer: sessionStorage.getItem("currentUser"),
-      public: $("#checkbox").is(":checked"),
+      public: $(".public #checkbox").is(":checked"),
     };
 
     saveNewEvent(eventToAdd, addGuests);
