@@ -21,6 +21,13 @@ const getAllEventsByUser = (userId) => {
     console.log(res.data.data);
     const events = adaptEventsToFullCalendar(res.data.data);
     console.log(events);
+
+    // remove previous events from calendar
+    const sources = calendar.getEventSources();
+    sources.forEach((source) => {
+      source.remove();
+    });
+
     calendar.addEventSource(events);
   }).catch((error) => {
     console.log(error);
